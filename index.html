@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Master Pro - Final Stable 1.0</title>
+    <title>Finance Master Pro - Final Released</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Kanit', sans-serif; }
-        .currency-badge { @apply text-[10px] font-bold bg-gray-200 text-gray-600 px-2 py-1 rounded ml-2 uppercase; }
+        .currency-badge { @apply text-[10px] font-bold bg-slate-200 text-slate-600 px-2 py-1 rounded ml-2 uppercase; }
+        .input-remark { @apply text-xs text-indigo-500 font-bold ml-2; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8">
@@ -34,15 +35,15 @@
             <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-b pb-8">
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-cur">💰 สกุลเงินหลัก (Target)</label>
-                    <select id="mainCurrency" onchange="updateBadges()" class="w-full p-4 bg-gray-50 border-2 border-indigo-100 rounded-2xl outline-none">
+                    <select id="mainCurrency" onchange="updateAllRemarks()" class="w-full p-4 bg-gray-50 border-2 border-indigo-100 rounded-2xl outline-none">
                         <option value="THB">THB (฿)</option><option value="USD">USD ($)</option>
                     </select>
                 </div>
                 <div id="box-principal" class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-principal">💵 เงินต้นเริ่มต้น</label>
-                    <div class="relative">
+                    <div class="flex items-center">
                         <input type="number" id="principal" value="10000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl">
-                        <span class="absolute right-4 top-5 currency-badge b-main">THB</span>
+                        <span id="rem-principal" class="input-remark">THB</span>
                     </div>
                 </div>
             </div>
@@ -54,8 +55,20 @@
 
             <div id="tab-trading" class="hidden space-y-6 mb-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-mode">🛠️ รูปแบบการคุม Lot</label><select id="tr-lot-mode" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700"><option value="fixed">Fixed Lot</option><option value="risk">Risk % per Trade</option></select></div>
-                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-lot-val">📦 ค่า Lot / % Risk</label><input type="number" id="tr-lot-value" value="0.10" step="0.01" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl"></div>
+                    <div class="space-y-2">
+                        <label class="font-semibold text-gray-600" id="t-tr-mode">🛠️ รูปแบบการคุม Lot</label>
+                        <select id="tr-lot-mode" onchange="updateAllRemarks()" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700">
+                            <option value="fixed">Fixed Lot (ระบุเอง)</option>
+                            <option value="risk">Risk % per Trade (คำนวณจากทุน)</option>
+                        </select>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="font-semibold text-gray-600" id="t-tr-lot-val">📦 ค่า Lot / % Risk</label>
+                        <div class="flex items-center">
+                            <input type="number" id="tr-lot-value" value="0.10" step="0.01" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl">
+                            <span id="rem-lot" class="input-remark">LOT</span>
+                        </div>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-win">🎯 Win Rate (%)</label><input type="number" id="tr-win" value="60" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
@@ -68,17 +81,24 @@
                 <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-shares">📜 หุ้นเริ่มต้น (Shares)</label><input type="number" id="dv-shares" value="1000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-dv-price">🏷️ ราคาหุ้นปัจจุบัน</label>
-                    <div class="flex relative"><input type="number" id="dv-price" value="50" class="w-full p-4 bg-gray-50 border-2 border-gray-100 border-r-0 rounded-l-2xl outline-none grow"><select id="dv-price-cur" onchange="updateBadges()" class="p-4 bg-gray-100 border-2 border-gray-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div>
+                    <div class="flex items-center"><input type="number" id="dv-price" value="50" class="w-full p-4 bg-gray-50 border-2 border-gray-100 border-r-0 rounded-l-2xl outline-none grow"><select id="dv-price-cur" onchange="updateAllRemarks()" class="p-4 bg-gray-100 border-2 border-gray-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div>
                 </div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-dv-val">💰 ปันผลต่อหุ้น</label>
-                    <div class="flex relative"><input type="number" id="dv-val" value="2.5" class="w-full p-4 bg-emerald-50 border-2 border-emerald-100 border-r-0 rounded-l-2xl outline-none grow"><select id="dv-div-cur" onchange="updateBadges()" class="p-4 bg-emerald-100 border-2 border-emerald-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div>
+                    <div class="flex items-center"><input type="number" id="dv-val" value="2.5" class="w-full p-4 bg-emerald-50 border-2 border-emerald-100 border-r-0 rounded-l-2xl outline-none grow"><select id="dv-div-cur" onchange="updateAllRemarks()" class="p-4 bg-emerald-100 border-2 border-emerald-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div>
                 </div>
                 <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-type">⚙️ รูปแบบปันผล</label><select id="dv-type" class="w-full p-4 bg-gray-100 border-2 border-gray-100 rounded-2xl"><option value="annual">ต่อปี</option><option value="period">ต่องวด</option></select></div>
                 <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-freq">📅 ความถี่จ่ายปันผล</label><select id="dv-freq" class="w-full p-4 bg-gray-100 border-2 border-gray-100 rounded-2xl"><option value="12">รายปี</option><option value="6">ราย 6 เดือน</option><option value="3">รายไตรมาส</option><option value="1">รายเดือน</option></select></div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-dv-dca">💸 DCA ต่อเดือน</label>
-                    <div class="flex relative"><input type="number" id="dv-dca" value="5000" class="w-full p-4 bg-blue-50 border-2 border-blue-100 border-r-0 rounded-l-2xl outline-none grow"><select id="dv-dca-cur" onchange="updateBadges()" class="p-4 bg-blue-100 border-2 border-blue-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div>
+                    <div class="flex items-center">
+                        <input type="number" id="dv-dca" value="5000" class="w-full p-4 bg-blue-50 border-2 border-blue-100 border-r-0 rounded-l-2xl outline-none grow">
+                        <select id="dv-dca-cur" onchange="updateAllRemarks()" class="p-4 bg-blue-100 border-2 border-blue-100 rounded-r-2xl font-bold">
+                            <option value="THB">THB</option>
+                            <option value="USD">USD</option>
+                        </select>
+                        <span id="rem-dca" class="input-remark">THB</span>
+                    </div>
                 </div>
                 <div class="space-y-2 lg:col-span-3"><label class="font-semibold text-gray-600" id="t-dv-dur">⏳ จำนวนปีที่ลงทุน</label><input type="number" id="dv-duration" value="10" class="w-full p-4 border-2 border-indigo-200 rounded-2xl"></div>
             </div>
@@ -136,9 +156,14 @@
             }
         };
 
-        function updateBadges() {
+        function updateAllRemarks() {
             const main = document.getElementById('mainCurrency').value;
-            document.querySelectorAll('.b-main').forEach(el => el.innerText = main);
+            const dcaCur = document.getElementById('dv-dca-cur').value;
+            const lotMode = document.getElementById('tr-lot-mode').value;
+            
+            document.getElementById('rem-principal').innerText = main;
+            document.getElementById('rem-dca').innerText = dcaCur;
+            document.getElementById('rem-lot').innerText = (lotMode === 'fixed') ? 'LOT' : '% RISK';
             document.querySelectorAll('.sign').forEach(el => el.innerText = main);
         }
 
@@ -156,9 +181,9 @@
             document.getElementById('th-shares').innerText = t.hSha;
             document.getElementById('th-gain').innerText = t.hGai;
             document.getElementById('th-balance').innerText = t.hBal;
-            document.getElementById('lang-th').className = l==='th'?'py-2 px-4 rounded-xl font-bold bg-indigo-600 text-white':'py-2 px-4 rounded-xl font-bold text-slate-400';
-            document.getElementById('lang-en').className = l==='en'?'py-2 px-4 rounded-xl font-bold bg-indigo-600 text-white':'py-2 px-4 rounded-xl font-bold text-slate-400';
-            updateBadges();
+            document.getElementById('lang-th').className = l==='th'?'py-2 px-4 rounded-xl font-bold bg-indigo-600 text-white shadow-md':'py-2 px-4 rounded-xl font-bold text-slate-400';
+            document.getElementById('lang-en').className = l==='en'?'py-2 px-4 rounded-xl font-bold bg-indigo-600 text-white shadow-md':'py-2 px-4 rounded-xl font-bold text-slate-400';
+            updateAllRemarks();
         }
 
         function switchMode(m) {
@@ -171,7 +196,7 @@
             ['nav-compound', 'nav-trading', 'nav-dividend'].forEach(id => {
                 document.getElementById(id).className = id.includes(m) ? "py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
             });
-            updateBadges();
+            updateAllRemarks();
         }
 
         function calculate() {
@@ -179,7 +204,7 @@
             const rates = { "THB": 1, "USD": 0.028 }; 
             const toMain = (val, cur) => (cur === mainCur) ? val : (mainCur === 'THB' ? val / rates['USD'] : val * rates['USD']);
             
-            updateBadges();
+            updateAllRemarks();
             document.getElementById('results').classList.remove('hidden');
             const table = document.getElementById('res-table'); table.innerHTML = '';
             let labels = ['0'], dataPoints = [], totalBal = 0, profit = 0;
@@ -227,10 +252,9 @@
             document.getElementById('res-total').innerText = totalBal.toLocaleString();
             document.getElementById('res-profit').innerText = profit.toLocaleString();
             if(chart) chart.destroy();
-            chart = new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels, datasets: [{ label: 'Total Value', data: dataPoints, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+            chart = new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels, datasets: [{ label: 'Total Portfolio Value', data: dataPoints, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)' }] }, options: { responsive: true, maintainAspectRatio: false } });
         }
-        // Init
-        updateBadges();
+        updateAllRemarks();
     </script>
 </body>
 </html>
