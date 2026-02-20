@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investment Calculation</title>
+    <title>Finance Master Pro - The Complete Version</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -13,13 +13,14 @@
         .rate-info { @apply text-[11px] text-emerald-600 mt-1 block italic font-semibold; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        footer { @apply bg-slate-900 text-white p-6 mt-10 rounded-t-3xl text-center; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8">
     <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
         
         <div class="bg-slate-900 p-8 text-white text-center border-b-4 border-indigo-600">
-            <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 ระบบคำนวณการเงิน</h1>
+            <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 ระบบคำนวณการเงิน (The Complete Edition)</h1>
             <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
                 <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700">
                     <button onclick="switchMode('compound')" id="nav-compound" class="mode-btn py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white">ดอกเบี้ยทบต้น</button>
@@ -40,7 +41,7 @@
                     <select id="mainCurrency" onchange="updateAllUI()" class="w-full p-4 bg-gray-50 border-2 border-indigo-100 rounded-2xl outline-none font-bold">
                         <option value="THB">THB (฿)</option><option value="USD">USD ($)</option>
                     </select>
-                    <span id="rate-remark" class="rate-info italic">🌐 กำลังดึงข้อมูล Real-time API...</span>
+                    <span id="rate-remark" class="rate-info italic">🌐 กำลังเชื่อมต่อ Real-time API...</span>
                 </div>
                 <div id="box-principal-global" class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-principal">💵 เงินต้นเริ่มต้น</label>
@@ -100,7 +101,17 @@
                 <div class="bg-white p-4 border rounded-3xl h-[400px] mb-8 shadow-inner"><canvas id="mainChart"></canvas></div>
                 <div class="bg-white border rounded-2xl overflow-hidden shadow-sm"><table class="w-full text-left text-sm"><thead class="bg-gray-100 border-b text-[10px] font-bold text-gray-500 uppercase"><tr><th class="p-4" id="th-period">รอบที่/ปี</th><th class="p-4 text-right" id="th-shares">มูลค่า/จำนวน</th><th class="p-4 text-right" id="th-gain">กำไร/ปันผล</th><th class="p-4 text-right" id="th-balance">เงินรวมสุทธิ</th></tr></thead><tbody id="res-table" class="divide-y text-gray-700"></tbody></table></div>
             </div>
+
+            <div class="mt-12 p-8 bg-gray-50 rounded-3xl border border-dashed border-gray-300">
+                <h3 class="text-lg font-bold text-gray-700 mb-4" id="t-feedback">✍️ ข้อเสนอแนะเพิ่มเติม</h3>
+                <textarea id="feedback-text" rows="3" class="w-full p-4 rounded-2xl border-2 border-gray-100 outline-none focus:border-indigo-300 transition" placeholder="พิมพ์ข้อเสนอแนะของคุณที่นี่..."></textarea>
+            </div>
         </div>
+
+        <footer>
+            <p class="text-indigo-400 font-bold text-lg mb-1">Finance Master Pro</p>
+            <p class="text-gray-400 text-sm" id="t-credit">จัดทำโดย nick.wl</p>
+        </footer>
     </div>
 
     <script>
@@ -116,8 +127,8 @@
         }
 
         const dict = {
-            th: { title: "🚀 ระบบคำนวณการเงิน", navCp: "ดอกเบี้ยทบต้น", navTr: "จำลองการเทรด", navDv: "หุ้นปันผล (DCA)", cur: "💰 สกุลเงินหลัก (Target)", principal: "💵 เงินต้นเริ่มต้น", cpRate: "📈 กำไร (%) ต่อรอบ", cpDur: "⏳ จำนวนรอบ", trDurLabel: "⏳ จำนวนรอบเทรด", trMode: "🛠️ รูปแบบการคุม Lot", trLotVal: "📦 ค่า Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)", dvShares: "📜 หุ้นเริ่มต้น (Shares)", dvPrice: "🏷️ ราคาหุ้นปัจจุบัน", dvVal: "💰 ปันผลต่อหุ้น", dvTax: "✂️ หักภาษี (%)", dvFreq: "📅 ความถี่จ่ายปันผล", dvDca: "💸 DCA ต่อเดือน", dvDur: "⏳ จำนวนปีที่ลงทุน", calcBtn: "คำนวณผลลัพธ์", annIncLbl: "ปันผลต่อปี (หลังหักภาษี)", monIncLbl: "รายได้เฉลี่ยต่อเดือน", resTotalLbl: "มูลค่าพอร์ตสุทธิ", resProfitLbl: "กำไร/ปันผลสะสม" },
-            en: { title: "🚀 Investment Calculator", navCp: "Compound", navTr: "Trading Sim", navDv: "Dividend Stock", cur: "💰 Main Currency", principal: "💵 Initial Capital", cpRate: "📈 Profit (%)", cpDur: "⏳ Rounds", trDurLabel: "⏳ Trade Rounds", trMode: "🛠️ Lot Mode", trLotVal: "📦 Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit", trSl: "❌ Stop Loss", dvShares: "📜 Start Shares", dvPrice: "🏷️ Stock Price", dvVal: "💰 Dividend/Share", dvTax: "✂️ Tax (%)", dvFreq: "📅 Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Years", calcBtn: "Calculate", annIncLbl: "Annual Div (After Tax)", monIncLbl: "Monthly Income", resTotalLbl: "Net Portfolio Value", resProfitLbl: "Total Profit" }
+            th: { title: "🚀 ระบบคำนวณการเงิน (The Complete Edition)", navCp: "ดอกเบี้ยทบต้น", navTr: "จำลองการเทรด", navDv: "หุ้นปันผล (DCA)", cur: "💰 สกุลเงินหลัก (Target)", principal: "💵 เงินต้นเริ่มต้น", cpRate: "📈 กำไร (%) ต่อรอบ", cpDur: "⏳ จำนวนรอบ", trDurLabel: "⏳ จำนวนรอบเทรด", trMode: "🛠️ รูปแบบการคุม Lot", trLotVal: "📦 ค่า Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)", dvShares: "📜 หุ้นเริ่มต้น (Shares)", dvPrice: "🏷️ ราคาหุ้นปัจจุบัน", dvVal: "💰 ปันผลต่อหุ้น", dvTax: "✂️ หักภาษี (%)", dvFreq: "📅 ความถี่จ่ายปันผล", dvDca: "💸 DCA ต่อเดือน", dvDur: "⏳ จำนวนปีที่ลงทุน", calcBtn: "คำนวณผลลัพธ์", annIncLbl: "ปันผลต่อปี (หลังหักภาษี)", monIncLbl: "รายได้เฉลี่ยต่อเดือน", resTotalLbl: "มูลค่าพอร์ตสุทธิ", resProfitLbl: "กำไร/ปันผลสะสม", feedback: "✍️ ข้อเสนอแนะเพิ่มเติม", credit: "จัดทำโดย nick.wl" },
+            en: { title: "🚀 Invesment calculator (Complete)", navCp: "Compound", navTr: "Trading Sim", navDv: "Dividend Stock", cur: "💰 Main Currency", principal: "💵 Initial Capital", cpRate: "📈 Profit (%)", cpDur: "⏳ Rounds", trDurLabel: "⏳ Trade Rounds", trMode: "🛠️ Lot Mode", trLotVal: "📦 Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit", trSl: "❌ Stop Loss", dvShares: "📜 Start Shares", dvPrice: "🏷️ Stock Price", dvVal: "💰 Dividend/Share", dvTax: "✂️ Tax (%)", dvFreq: "📅 Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Years", calcBtn: "Calculate", annIncLbl: "Annual Div (After Tax)", monIncLbl: "Monthly Income", resTotalLbl: "Net Portfolio Value", resProfitLbl: "Total Profit", feedback: "✍️ Additional Feedback", credit: "Created by nick.wl" }
         };
 
         function updateAllUI() {
@@ -134,6 +145,8 @@
             document.getElementById('nav-compound').innerText = t.navCp;
             document.getElementById('nav-trading').innerText = t.navTr;
             document.getElementById('nav-dividend').innerText = t.navDv;
+            document.getElementById('t-feedback').innerText = t.feedback;
+            document.getElementById('t-credit').innerText = t.credit;
             Object.keys(t).forEach(k => { const el = document.getElementById(`t-${k.replace(/[A-Z]/g, m => "-" + m.toLowerCase())}`); if(el) el.innerText = t[k]; });
             document.getElementById('lang-th').className = l==='th'?'py-2 px-4 rounded-xl font-bold bg-indigo-600 text-white shadow-md':'py-2 px-4 rounded-xl font-bold text-slate-400';
             document.getElementById('lang-en').className = l==='en'?'py-2 px-4 rounded-xl font-bold bg-indigo-600 text-white shadow-md':'py-2 px-4 rounded-xl font-bold text-slate-400';
@@ -203,11 +216,9 @@
             document.getElementById('res-total').innerText = totalBal.toLocaleString();
             document.getElementById('res-profit').innerText = profit.toLocaleString();
             if(chart) chart.destroy();
-            chart = new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels, datasets: [{ label: 'Total Value', data: dataPoints, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+            chart = new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels, datasets: [{ label: 'Portfolio Growth', data: dataPoints, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)' }] }, options: { responsive: true, maintainAspectRatio: false } });
         }
         fetchRate(); updateAllUI();
     </script>
 </body>
 </html>
-
-
