@@ -7,23 +7,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Kanit', sans-serif; transition: all 0.3s ease; }
-    </style>
+    <style>body { font-family: 'Kanit', sans-serif; transition: all 0.3s ease; }</style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8">
     <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
         
         <div class="bg-slate-900 p-8 text-white text-center">
             <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 เครื่องมือคำนวณการเงินและการเทรด</h1>
-            <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-sm">
-                <div class="flex bg-slate-800 p-1.5 rounded-2xl w-full md:w-80 border border-slate-700">
-                    <button onclick="switchMode('compound')" id="btn-compound" class="flex-1 py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white shadow-lg">
-                        <span id="t-mode-c">ดอกเบี้ยทบต้น</span>
-                    </button>
-                    <button onclick="switchMode('trading')" id="btn-trading" class="flex-1 py-2 px-4 rounded-xl font-semibold transition text-slate-400 hover:text-white">
-                        <span id="t-mode-t">จำลองการเทรด</span>
-                    </button>
+            <div class="flex flex-wrap items-center justify-center gap-4 text-xs">
+                <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700 overflow-x-auto">
+                    <button onclick="switchMode('compound')" id="btn-compound" class="whitespace-nowrap py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white shadow-lg">ดอกเบี้ยทบต้น</button>
+                    <button onclick="switchMode('trading')" id="btn-trading" class="whitespace-nowrap py-2 px-4 rounded-xl font-semibold transition text-slate-400 hover:text-white">จำลองการเทรด</button>
+                    <button onclick="switchMode('dividend')" id="btn-dividend" class="whitespace-nowrap py-2 px-4 rounded-xl font-semibold transition text-slate-400 hover:text-white">หุ้นปันผล</button>
                 </div>
                 <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700">
                     <button onclick="changeLang('th')" id="lang-th" class="py-2 px-6 rounded-xl font-bold transition bg-indigo-600 text-white shadow-lg">TH</button>
@@ -33,17 +28,17 @@
         </div>
 
         <div class="p-6 md:p-10">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div id="common-inputs" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-currency">💰 สกุลเงิน</label>
-                    <select id="currency" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-indigo-500 transition-all">
+                    <select id="currency" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-indigo-500">
                         <option value="฿">THB (฿)</option>
                         <option value="$">USD ($)</option>
                     </select>
                 </div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-principal">💵 เงินต้นเริ่มต้น</label>
-                    <input type="number" id="principal" value="10000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-indigo-500 transition-all">
+                    <input type="number" id="principal" value="10000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none focus:border-indigo-500">
                 </div>
             </div>
 
@@ -53,8 +48,9 @@
                     <div class="flex">
                         <input type="number" id="rate" value="5" class="w-full p-4 bg-gray-50 border-2 border-gray-100 border-r-0 rounded-l-2xl outline-none">
                         <select id="ratePeriod" class="p-4 bg-indigo-50 border-2 border-indigo-100 rounded-r-2xl outline-none text-indigo-700 font-bold">
-                            <option value="วัน">ต่อวัน</option>
-                            <option value="ปี" selected>ต่อปี</option>
+                            <option value="วัน" data-en="Day">วัน</option>
+                            <option value="เดือน" data-en="Month" selected>เดือน</option>
+                            <option value="ปี" data-en="Year">ปี</option>
                         </select>
                     </div>
                 </div>
@@ -66,11 +62,32 @@
 
             <div id="input-trading" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-winrate">🎯 Win Rate (%)</label><input type="number" id="winRate" value="60" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tp">✅ Take Profit (Pts)</label><input type="number" id="tpPoints" value="500" class="w-full p-4 bg-green-50 border-2 border-green-100 rounded-2xl"></div>
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-sl">❌ Stop Loss (Pts)</label><input type="number" id="slPoints" value="250" class="w-full p-4 bg-red-50 border-2 border-red-100 rounded-2xl"></div>
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-lottype">⚙️ คำนวณ Lot</label><select id="lotType" onchange="toggleLotInput()" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700"><option value="fixed">Fixed Lot</option><option value="percent">Risk %</option></select></div>
-                <div class="space-y-2"><label id="lotLabel" class="font-semibold text-gray-600">📦 Lot</label><input type="number" id="lotValue" value="0.1" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tp">✅ TP (Pts)</label><input type="number" id="tpPoints" value="500" class="w-full p-4 bg-green-50 border-2 border-green-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-sl">❌ SL (Pts)</label><input type="number" id="slPoints" value="250" class="w-full p-4 bg-red-50 border-2 border-red-100 rounded-2xl"></div>
+                <div class="space-y-2">
+                    <label class="font-semibold text-gray-600" id="t-lottype">⚙️ คำนวณ Lot</label>
+                    <select id="lotType" onchange="toggleLotInput()" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700">
+                        <option value="fixed">Fixed Lot</option>
+                        <option value="percent">Risk %</option>
+                    </select>
+                </div>
+                <div class="space-y-2"><label id="lotLabel" class="font-semibold text-gray-600">📦 Lot Size</label><input type="number" id="lotValue" value="0.1" step="0.01" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
                 <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-trades">🔄 รอบเทรด</label><input type="number" id="totalTrades" value="20" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+            </div>
+
+            <div id="input-dividend" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-div-shares">📜 จำนวนหุ้น</label><input type="number" id="shares" value="1000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-div-price">🏷️ ราคาหุ้นปัจจุบัน</label><input type="number" id="stockPrice" value="50" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-div-profit">💰 ปันผลต่อหุ้น (Profit/Share)</label><input type="number" id="divPerShare" value="2.5" class="w-full p-4 bg-emerald-50 border-2 border-emerald-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-div-tax">🧾 ภาษีปันผล (%)</label><input type="number" id="divTax" value="10" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-div-years">⏳ จำนวนปีที่ถือ</label><input type="number" id="divYears" value="10" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                <div class="space-y-2">
+                    <label class="font-semibold text-gray-600" id="t-div-type">🔄 รูปแบบปันผล</label>
+                    <select id="divReinvest" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700">
+                        <option value="cash">รับปันผลทันที (Cash Out)</option>
+                        <option value="reinvest">ลงทุนเพิ่ม (Reinvest)</option>
+                    </select>
+                </div>
             </div>
 
             <button onclick="processCalculation()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl font-bold text-xl mb-12 shadow-lg active:scale-95 transition-all">
@@ -81,11 +98,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 text-center">
                     <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 shadow-inner">
                         <p class="text-indigo-600 text-xs font-bold uppercase mb-2" id="t-res-total">Balance สุทธิ</p>
-                        <h2 class="text-4xl font-bold text-indigo-900"><span class="curSign"></span> <span id="resTotal">0</span></h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-indigo-900"><span class="curSign"></span> <span id="resTotal">0</span></h2>
                     </div>
                     <div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100 shadow-inner">
                         <p class="text-emerald-600 text-xs font-bold uppercase mb-2" id="t-res-profit">กำไรทั้งหมด</p>
-                        <h2 class="text-4xl font-bold text-emerald-700"><span class="curSign"></span> <span id="resProfit">0</span></h2>
+                        <h2 class="text-3xl md:text-4xl font-bold text-emerald-700"><span class="curSign"></span> <span id="resProfit">0</span></h2>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
@@ -93,7 +110,7 @@
                     <div class="bg-white border rounded-3xl overflow-hidden flex flex-col shadow-sm">
                         <div id="tableHeaderLabel" class="font-bold p-5 border-b bg-gray-50">รายละเอียด</div>
                         <div class="overflow-y-auto max-h-[320px]">
-                            <table class="w-full text-left text-sm"><thead class="bg-white sticky top-0 shadow-sm text-[10px] font-bold text-gray-400 uppercase"><tr><th class="p-4" id="t-col-id">#</th><th class="p-4 text-right" id="t-col-start">Start</th><th id="colStatus" class="p-4 hidden text-center">Status</th><th class="p-4 text-right" id="t-col-gain">Gain</th><th class="p-4 text-right" id="t-col-end">Balance</th></tr></thead><tbody id="resTable" class="divide-y"></tbody></table>
+                            <table class="w-full text-left text-sm"><thead class="bg-white sticky top-0 shadow-sm text-[10px] font-bold text-gray-400 uppercase"><tr><th class="p-4" id="t-col-id">#</th><th class="p-4 text-right" id="t-col-start">Start</th><th id="colStatus" class="p-4 hidden text-center">Status</th><th class="p-4 text-right" id="t-col-gain">Gain</th><th class="p-4 text-right text-gray-800" id="t-col-end">Balance</th></tr></thead><tbody id="resTable" class="divide-y"></tbody></table>
                         </div>
                     </div>
                 </div>
@@ -104,24 +121,16 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 flex flex-col items-center justify-center text-center">
                     <h3 class="font-bold text-indigo-900 text-xl mb-1" id="t-created-title">👨‍💻 จัดทำโดย</h3>
-                    <p class="text-indigo-700 font-semibold text-lg">Nick.wl</p>
-                    <p class="text-indigo-500 text-sm mt-1 opacity-80" id="t-created-desc">มุ่งมั่นสร้างเครื่องมือที่มีคุณภาพ</p>
+                    <p class="text-indigo-700 font-semibold text-lg" id="userName">ชื่อของคุณที่นี่</p>
                 </div>
-
                 <div class="bg-slate-50 p-8 rounded-3xl border-2 border-dashed border-gray-200 flex flex-col justify-center">
                     <h3 class="text-lg font-bold text-slate-800 mb-2" id="t-req-title">💡 อยากได้อะไรเพิ่ม?</h3>
                     <div class="flex gap-2">
-                        <input type="text" id="requestInput" placeholder="เพิ่มปุ่ม..." class="w-full p-4 border-2 border-white rounded-2xl outline-none focus:border-indigo-500 shadow-sm text-sm">
-                        <button onclick="sendRequest()" class="bg-slate-800 hover:bg-black text-white px-6 py-4 rounded-2xl font-bold transition-all text-sm">
-                            <span id="t-req-btn">ส่ง</span>
-                        </button>
+                        <input type="text" id="requestInput" placeholder="..." class="w-full p-4 border-2 border-white rounded-2xl outline-none focus:border-indigo-500 shadow-sm text-sm">
+                        <button onclick="sendRequest()" class="bg-slate-800 hover:bg-black text-white px-6 py-4 rounded-2xl font-bold transition-all text-sm">ส่ง</button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="bg-slate-50 p-6 text-center text-gray-400 text-xs border-t border-gray-100">
-            © 2026 Compound & Trading Simulator | All Rights Reserved
         </div>
     </div>
 
@@ -129,97 +138,136 @@
         let currentMode = 'compound'; let chart = null; let currentLang = 'th';
         const i18n = {
             th: {
-                title: "🚀 เครื่องมือคำนวณการเงินและการเทรด", modeC: "ดอกเบี้ยทบต้น", modeT: "จำลองการเทรด",
+                title: "🚀 เครื่องมือการเงินและการเทรด", modeC: "ดอกเบี้ยทบต้น", modeT: "จำลองการเทรด", modeD: "หุ้นปันผล",
                 currency: "💰 สกุลเงิน", principal: "💵 เงินต้น", rate: "📈 กำไร (%) ต่อรอบ", duration: "⏳ จำนวนรอบ",
                 winrate: "🎯 Win Rate (%)", tp: "✅ TP (Pts)", sl: "❌ SL (Pts)", lottype: "⚙️ คำนวณ Lot", trades: "🔄 ไม้เทรด",
+                divShares: "📜 จำนวนหุ้น", divPrice: "🏷️ ราคาซื้อเฉลี่ย", divProfit: "💰 ปันผลต่อหุ้น", divTax: "🧾 ภาษีปันผล (%)", divYears: "⏳ จำนวนปีที่ถือ", divType: "🔄 รูปแบบปันผล",
                 btnCalc: "คำนวณผลลัพธ์", resTotal: "Balance สุทธิ", resProfit: "กำไรทั้งหมด",
                 tableHeader: "รายละเอียดรายงวด", colId: "ลำดับ", colStart: "เริ่ม", colGain: "กำไร/ขาดทุน", colEnd: "ยอดรวม",
-                createdTitle: "👨‍💻 จัดทำโดย", createdDesc: "มุ่งมั่นสร้างเครื่องมือที่มีคุณภาพ",
-                reqTitle: "💡 อยากได้อะไรเพิ่ม?", reqBtn: "ส่ง", reqAlert: "กรุณาพิมพ์สิ่งที่ต้องการก่อนส่งครับ"
+                createdTitle: "👨‍💻 จัดทำโดย", reqTitle: "💡 อยากได้อะไรเพิ่ม?", reqAlert: "พิมพ์ก่อนส่งนะจ๊ะ"
             },
             en: {
-                title: "🚀 Finance & Trading Simulator", modeC: "Compound", modeT: "Trading",
+                title: "🚀 Finance & Trading Simulator", modeC: "Compound", modeT: "Trading", modeD: "Dividend",
                 currency: "💰 Currency", principal: "💵 Capital", rate: "📈 Profit (%)", duration: "⏳ Rounds",
                 winrate: "🎯 Win Rate (%)", tp: "✅ TP (Pts)", sl: "❌ SL (Pts)", lottype: "⚙️ Lot Calc", trades: "🔄 Trades",
+                divShares: "📜 Shares Count", divPrice: "🏷️ Avg. Price", divProfit: "💰 Div / Share", divTax: "🧾 Div. Tax (%)", divYears: "⏳ Investment Years", divType: "🔄 Div. Type",
                 btnCalc: "Calculate", resTotal: "Final Balance", resProfit: "Net Profit",
                 tableHeader: "Detail Report", colId: "No.", colStart: "Start", colGain: "Gain/Loss", colEnd: "Balance",
-                createdTitle: "👨‍💻 Created By", createdDesc: "Striving for quality tools",
-                reqTitle: "💡 Any suggestions?", reqBtn: "Send", reqAlert: "Please type your suggestion first."
+                createdTitle: "👨‍💻 Created By", reqTitle: "💡 Any suggestions?", reqAlert: "Please type something"
             }
         };
 
         function changeLang(lang) {
-            currentLang = lang; const content = i18n[lang];
-            document.getElementById('t-title').innerText = content.title;
-            document.getElementById('t-mode-c').innerText = content.modeC;
-            document.getElementById('t-mode-t').innerText = content.modeT;
-            document.getElementById('t-btn-calc').innerText = content.btnCalc;
-            document.getElementById('t-created-title').innerText = content.createdTitle;
-            document.getElementById('t-created-desc').innerText = content.createdDesc;
-            document.getElementById('t-req-title').innerText = content.reqTitle;
-            document.getElementById('t-req-btn').innerText = content.reqBtn;
-            document.getElementById('lang-th').className = lang === 'th' ? 'py-2 px-6 rounded-xl font-bold transition bg-indigo-600 text-white shadow-lg' : 'py-2 px-6 rounded-xl font-bold transition text-slate-400 hover:text-white';
-            document.getElementById('lang-en').className = lang === 'en' ? 'py-2 px-6 rounded-xl font-bold transition bg-indigo-600 text-white shadow-lg' : 'py-2 px-6 rounded-xl font-bold transition text-slate-400 hover:text-white';
+            currentLang = lang; const c = i18n[lang];
+            document.getElementById('t-title').innerText = c.title;
+            document.getElementById('btn-compound').innerText = c.modeC;
+            document.getElementById('btn-trading').innerText = c.modeT;
+            document.getElementById('btn-dividend').innerText = c.modeD;
+            document.getElementById('t-currency').innerText = c.currency;
+            document.getElementById('t-principal').innerText = c.principal;
+            document.getElementById('t-rate').innerText = c.rate;
+            document.getElementById('t-duration').innerText = c.duration;
+            document.getElementById('t-winrate').innerText = c.winrate;
+            document.getElementById('t-tp').innerText = c.tp;
+            document.getElementById('t-sl').innerText = c.sl;
+            document.getElementById('t-lottype').innerText = c.lottype;
+            document.getElementById('t-trades').innerText = c.trades;
+            document.getElementById('t-div-shares').innerText = c.divShares;
+            document.getElementById('t-div-price').innerText = c.divPrice;
+            document.getElementById('t-div-profit').innerText = c.divProfit;
+            document.getElementById('t-div-tax').innerText = c.divTax;
+            document.getElementById('t-div-years').innerText = c.divYears;
+            document.getElementById('t-div-type').innerText = c.divType;
+            document.getElementById('t-btn-calc').innerText = c.btnCalc;
+            document.getElementById('t-res-total').innerText = c.resTotal;
+            document.getElementById('t-res-profit').innerText = c.resProfit;
+            document.getElementById('t-created-title').innerText = c.createdTitle;
+            document.getElementById('t-req-title').innerText = c.reqTitle;
+            // Update Lang Buttons
+            document.getElementById('lang-th').className = lang === 'th' ? 'py-2 px-6 rounded-xl font-bold bg-indigo-600 text-white shadow-lg' : 'py-2 px-6 rounded-xl font-bold text-slate-400';
+            document.getElementById('lang-en').className = lang === 'en' ? 'py-2 px-6 rounded-xl font-bold bg-indigo-600 text-white shadow-lg' : 'py-2 px-6 rounded-xl font-bold text-slate-400';
         }
 
         function switchMode(mode) {
             currentMode = mode;
             document.getElementById('input-compound').classList.toggle('hidden', mode !== 'compound');
             document.getElementById('input-trading').classList.toggle('hidden', mode !== 'trading');
-            document.getElementById('btn-compound').className = mode === 'compound' ? "flex-1 py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "flex-1 py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
-            document.getElementById('btn-trading').className = mode === 'trading' ? "flex-1 py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "flex-1 py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
-        }
-
-        function toggleLotInput() {
-            const type = document.getElementById('lotType').value;
-            document.getElementById('lotLabel').innerText = (type === 'fixed') ? "📦 Lot Size" : "⚠️ Risk %";
-        }
-
-        function sendRequest() {
-            const req = document.getElementById('requestInput').value;
-            if(!req) return alert(i18n[currentLang].reqAlert);
-            window.location.href = `mailto:YOUR_EMAIL@example.com?subject=FeatureRequest&body=${req}`;
+            document.getElementById('input-dividend').classList.toggle('hidden', mode !== 'dividend');
+            document.getElementById('common-inputs').classList.toggle('hidden', mode === 'dividend');
+            
+            ['compound', 'trading', 'dividend'].forEach(m => {
+                const btn = document.getElementById('btn-' + m);
+                btn.className = mode === m ? "whitespace-nowrap py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "whitespace-nowrap py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
+            });
         }
 
         function processCalculation() {
-            const principal = parseFloat(document.getElementById('principal').value);
             const symbol = document.getElementById('currency').value;
-            if(!principal) return;
+            document.querySelectorAll('.curSign').forEach(el => el.innerText = symbol);
             document.getElementById('results').classList.remove('hidden');
-            let currentBalance = principal; let labels = ['0']; let dataPoints = [principal];
             const tableBody = document.getElementById('resTable'); tableBody.innerHTML = '';
-            
+            let labels = ['เริ่ม'], dataPoints = [], finalBalance = 0, totalProfit = 0;
+
             if (currentMode === 'compound') {
-                const rate = parseFloat(document.getElementById('rate').value)/100;
-                const dur = parseInt(document.getElementById('duration').value);
+                let principal = parseFloat(document.getElementById('principal').value);
+                let rate = parseFloat(document.getElementById('rate').value)/100;
+                let dur = parseInt(document.getElementById('duration').value);
+                finalBalance = principal; dataPoints.push(principal);
                 document.getElementById('colStatus').classList.add('hidden');
                 for(let i=1; i<=dur; i++) {
-                    let start = currentBalance; let profit = currentBalance * rate; currentBalance += profit;
-                    tableBody.innerHTML += `<tr><td class="p-4 text-gray-400">${i}</td><td class="p-4 text-right">${start.toLocaleString(undefined,{minimumFractionDigits:2})}</td><td class="p-4 text-right text-green-600 font-bold">+${profit.toLocaleString(undefined,{minimumFractionDigits:2})}</td><td class="p-4 text-right font-bold text-slate-800">${currentBalance.toLocaleString(undefined,{minimumFractionDigits:2})}</td></tr>`;
-                    labels.push(i); dataPoints.push(currentBalance.toFixed(2));
+                    let start = finalBalance; let profit = finalBalance * rate; finalBalance += profit;
+                    tableBody.innerHTML += `<tr><td class="p-4">${i}</td><td class="p-4 text-right">${start.toLocaleString()}</td><td class="p-4 text-right text-green-600">+${profit.toLocaleString()}</td><td class="p-4 text-right font-bold">${finalBalance.toLocaleString()}</td></tr>`;
+                    labels.push(i); dataPoints.push(finalBalance.toFixed(2));
                 }
-            } else {
-                const winR = parseFloat(document.getElementById('winRate').value)/100;
-                const tp = parseFloat(document.getElementById('tpPoints').value);
-                const sl = parseFloat(document.getElementById('slPoints').value);
-                const lotType = document.getElementById('lotType').value;
-                const lotVal = parseFloat(document.getElementById('lotValue').value);
-                const trades = parseInt(document.getElementById('totalTrades').value);
+                totalProfit = finalBalance - principal;
+            } else if (currentMode === 'trading') {
+                let principal = parseFloat(document.getElementById('principal').value);
+                let winR = parseFloat(document.getElementById('winRate').value)/100;
+                let tp = parseFloat(document.getElementById('tpPoints').value);
+                let sl = parseFloat(document.getElementById('slPoints').value);
+                let lot = parseFloat(document.getElementById('lotValue').value);
+                let trades = parseInt(document.getElementById('totalTrades').value);
+                finalBalance = principal; dataPoints.push(principal);
                 document.getElementById('colStatus').classList.remove('hidden');
                 for(let i=1; i<=trades; i++) {
-                    let start = currentBalance;
-                    let calculatedLot = (lotType === 'fixed') ? lotVal : (currentBalance * (lotVal/100)) / sl;
-                    const win = Math.random() < winR;
-                    const change = win ? (tp * calculatedLot) : -(sl * calculatedLot);
-                    currentBalance += change;
-                    const statusTxt = win ? (currentLang === 'th' ? 'ชนะ' : 'WIN') : (currentLang === 'th' ? 'แพ้' : 'LOSS');
-                    tableBody.innerHTML += `<tr><td class="p-4 text-gray-400">${i}</td><td class="p-4 text-right text-gray-600">${start.toLocaleString(undefined,{minimumFractionDigits:2})}</td><td class="p-4 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${win?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${statusTxt}</span></td><td class="p-4 text-right font-bold ${change>0?'text-green-600':'text-red-600'}">${change.toLocaleString(undefined,{minimumFractionDigits:2})}</td><td class="p-4 text-right font-bold text-slate-800">${currentBalance.toLocaleString(undefined,{minimumFractionDigits:2})}</td></tr>`;
-                    labels.push(i); dataPoints.push(currentBalance.toFixed(2));
+                    let start = finalBalance; let win = Math.random() < winR;
+                    let change = win ? (tp * lot) : -(sl * lot); finalBalance += change;
+                    tableBody.innerHTML += `<tr><td class="p-4">${i}</td><td class="p-4 text-right">${start.toLocaleString()}</td><td class="p-4 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${win?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${win?'WIN':'LOSS'}</span></td><td class="p-4 text-right ${change>0?'text-green-600':'text-red-600'}">${change.toLocaleString()}</td><td class="p-4 text-right font-bold">${finalBalance.toLocaleString()}</td></tr>`;
+                    labels.push(i); dataPoints.push(finalBalance.toFixed(2));
                 }
+                totalProfit = finalBalance - principal;
+            } else if (currentMode === 'dividend') {
+                let shares = parseFloat(document.getElementById('shares').value);
+                let price = parseFloat(document.getElementById('stockPrice').value);
+                let div = parseFloat(document.getElementById('divPerShare').value);
+                let tax = parseFloat(document.getElementById('divTax').value)/100;
+                let years = parseInt(document.getElementById('divYears').value);
+                let mode = document.getElementById('divReinvest').value;
+                let initialValue = shares * price;
+                finalBalance = initialValue; dataPoints.push(initialValue);
+                document.getElementById('colStatus').classList.add('hidden');
+                
+                let accumulatedCash = 0;
+                for(let i=1; i<=years; i++) {
+                    let startVal = finalBalance;
+                    let yearlyDiv = (shares * div) * (1 - tax);
+                    if(mode === 'reinvest') {
+                        shares += yearlyDiv / price;
+                        finalBalance = shares * price;
+                    } else {
+                        accumulatedCash += yearlyDiv;
+                        finalBalance = shares * price;
+                    }
+                    let displayGain = mode === 'reinvest' ? `+${yearlyDiv.toLocaleString()} (Reinvest)` : `+${yearlyDiv.toLocaleString()} (Cash)`;
+                    tableBody.innerHTML += `<tr><td class="p-4">${i} (ปี)</td><td class="p-4 text-right">${startVal.toLocaleString()}</td><td class="p-4 text-right text-emerald-600">${displayGain}</td><td class="p-4 text-right font-bold">${finalBalance.toLocaleString()}</td></tr>`;
+                    labels.push(i + 'Y'); dataPoints.push(finalBalance.toFixed(2));
+                }
+                totalProfit = (finalBalance - initialValue) + accumulatedCash;
+                if(mode === 'cash') finalBalance += accumulatedCash;
             }
-            document.querySelectorAll('.curSign').forEach(el => el.innerText = symbol);
-            document.getElementById('resTotal').innerText = currentBalance.toLocaleString(undefined,{minimumFractionDigits:2});
-            document.getElementById('resProfit').innerText = (currentBalance - principal).toLocaleString(undefined,{minimumFractionDigits:2});
+
+            document.getElementById('resTotal').innerText = finalBalance.toLocaleString();
+            document.getElementById('resProfit').innerText = totalProfit.toLocaleString();
             updateChart(labels, dataPoints, symbol);
         }
 
@@ -228,11 +276,16 @@
             if(chart) chart.destroy();
             chart = new Chart(ctx, {
                 type: 'line',
-                data: { labels, datasets: [{ data, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)', borderWidth: 3, pointRadius: 2 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => symbol + v.toLocaleString() } } } }
+                data: { labels, datasets: [{ data, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
+        }
+
+        function sendRequest() {
+            const req = document.getElementById('requestInput').value;
+            if(!req) return alert(i18n[currentLang].reqAlert);
+            window.location.href = `mailto:YOUR_EMAIL@example.com?subject=FeatureRequest&body=${req}`;
         }
     </script>
 </body>
 </html>
-
