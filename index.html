@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Master Pro</title>
+    <title>Investment calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -13,14 +13,14 @@
         .rate-info { @apply text-[11px] text-emerald-600 mt-1 block italic font-semibold; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        footer { @apply bg-slate-900 text-white p-8 mt-10 rounded-t-3xl text-center border-t-4 border-indigo-600; }
+        footer { @apply bg-slate-900 text-white p-10 mt-10 rounded-t-[3rem] text-center border-t-4 border-indigo-600 shadow-2xl; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8">
     <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
         
         <div class="bg-slate-900 p-8 text-white text-center border-b-4 border-indigo-600">
-            <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 ระบบคำนวณการเงิน (Full Verified)</h1>
+            <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 ระบบคำนวณการเงิน (Final Luxury)</h1>
             <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
                 <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700">
                     <button onclick="switchMode('compound')" id="nav-compound" class="mode-btn py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white shadow-lg">ดอกเบี้ยทบต้น</button>
@@ -41,7 +41,7 @@
                     <select id="mainCurrency" onchange="updateAllUI()" class="w-full p-4 bg-gray-50 border-2 border-indigo-100 rounded-2xl outline-none font-bold">
                         <option value="THB">THB (฿)</option><option value="USD">USD ($)</option>
                     </select>
-                    <span id="rate-remark" class="rate-info">🌐 กำลังเชื่อมต่อข้อมูล Real-time...</span>
+                    <span id="rate-remark" class="rate-info italic">🌐 กำลังเชื่อมต่อ Real-time API...</span>
                 </div>
                 <div id="box-principal-global" class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-principal">💵 เงินต้นเริ่มต้น</label>
@@ -104,7 +104,7 @@
 
             <div class="mt-12 p-8 bg-indigo-50 rounded-3xl border-2 border-indigo-100">
                 <h3 class="text-lg font-bold text-indigo-900 mb-4" id="t-feedback">✍️ เสนอแนะสิ่งที่คุณต้องการเพิ่มเติม</h3>
-                <div class="space-y-4">
+                <div class="space-y-4 text-left">
                     <textarea id="feedback-text" rows="3" class="w-full p-4 rounded-2xl border-2 border-white outline-none focus:border-indigo-400 shadow-sm transition" placeholder="พิมพ์ความเห็นของคุณที่นี่..."></textarea>
                     <button onclick="submitFeedback()" class="bg-indigo-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-indigo-700 transition active:scale-95 shadow-md" id="t-fb-btn">ส่งข้อมูล</button>
                 </div>
@@ -112,8 +112,12 @@
         </div>
 
         <footer>
-            <p class="text-indigo-400 font-bold text-xl mb-1">Finance Master Pro</p>
-            <p class="text-white text-sm opacity-90" id="t-credit">จัดทำโดย nick.wl | All Rights Reserved</p>
+            <div class="max-w-4xl mx-auto">
+                <p class="text-indigo-400 font-bold text-2xl mb-2 tracking-wide">Investment calculator</p>
+                <div class="w-16 h-1 bg-indigo-500 mx-auto mb-4"></div>
+                <p class="text-white text-lg font-medium opacity-100" id="t-credit">จัดทำโดย nick.wl | All Rights Reserved</p>
+                <p class="text-slate-400 text-xs mt-4">Automated Portfolio & Investment Simulator Engine v1.0.8</p>
+            </div>
         </footer>
     </div>
 
@@ -131,7 +135,7 @@
 
         const dict = {
             th: { title: "🚀 ระบบคำนวณการเงิน", navCp: "ดอกเบี้ยทบต้น", navTr: "จำลองการเทรด", navDv: "หุ้นปันผล (DCA)", cur: "💰 สกุลเงินหลัก (Target)", principal: "💵 เงินต้นเริ่มต้น", cpRate: "📈 กำไร (%) ต่อรอบ", cpDur: "⏳ จำนวนรอบ", trDurLabel: "⏳ จำนวนรอบเทรด", trMode: "🛠️ รูปแบบการคุม Lot", trLotVal: "📦 ค่า Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)", dvShares: "📜 หุ้นเริ่มต้น (Shares)", dvPrice: "🏷️ ราคาหุ้นปัจจุบัน", dvVal: "💰 ปันผลต่อหุ้น", dvTax: "✂️ หักภาษี (%)", dvFreq: "📅 ความถี่จ่ายปันผล", dvDca: "💸 DCA ต่อเดือน", dvDur: "⏳ จำนวนปีที่ลงทุน", calcBtn: "คำนวณผลลัพธ์", annIncLbl: "ปันผลต่อปี (หลังหักภาษี)", monIncLbl: "รายได้เฉลี่ยต่อเดือน", resTotalLbl: "มูลค่าพอร์ตสุทธิ", resProfitLbl: "กำไร/ปันผลสะสม", feedback: "✍️ เสนอแนะสิ่งที่คุณต้องการเพิ่มเติม", fbBtn: "ส่งข้อมูล", credit: "จัดทำโดย nick.wl | All Rights Reserved" },
-            en: { title: "🚀 Investment calculator", navCp: "Compound", navTr: "Trading Sim", navDv: "Dividend Stock", cur: "💰 Main Currency", principal: "💵 Initial Capital", cpRate: "📈 Profit (%)", cpDur: "⏳ Rounds", trDurLabel: "⏳ Trade Rounds", trMode: "🛠️ Lot Mode", trLotVal: "📦 Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit", trSl: "❌ Stop Loss", dvShares: "📜 Start Shares", dvPrice: "🏷️ Stock Price", dvVal: "💰 Dividend/Share", dvTax: "✂️ Tax (%)", dvFreq: "📅 Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Years", calcBtn: "Calculate", annIncLbl: "Annual Div (After Tax)", monIncLbl: "Monthly Income", resTotalLbl: "Net Portfolio Value", resProfitLbl: "Total Profit", feedback: "✍️ Feedback / Suggested Features", fbBtn: "Submit", credit: "Created by nick.wl | All Rights Reserved" }
+            en: { title: "🚀 Investment calculator", navCp: "Compound", navTr: "Trading Sim", navDv: "Dividend Stock", cur: "💰 Main Currency", principal: "💵 Initial Capital", cpRate: "📈 Profit (%)", cpDur: "⏳ Rounds", trDurLabel: "⏳ Trade Rounds", trMode: "🛠️ Lot Mode", trLotVal: "📦 Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit", trSl: "❌ Stop Loss", dvShares: "📜 Start Shares", dvPrice: "🏷️ Stock Price", dvVal: "💰 Dividend/Share", dvTax: "✂️ Tax (%)", dvFreq: "📅 Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Years", calcBtn: "Calculate", annIncLbl: "Annual Div (After Tax)", monIncLbl: "Monthly Income", resTotalLbl: "Net Portfolio Value", resProfitLbl: "Total Profit", feedback: "✍️ Suggested Features / Feedback", fbBtn: "Submit", credit: "Created by nick.wl | All Rights Reserved" }
         };
 
         function updateAllUI() {
