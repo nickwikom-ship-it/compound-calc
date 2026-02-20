@@ -54,32 +54,17 @@
 
             <div id="tab-dividend" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-shares">📜 หุ้นเริ่มต้น (Shares)</label><input type="number" id="dv-shares" value="1000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
-                <div class="space-y-2">
-                    <label class="font-semibold text-gray-600" id="t-dv-price">🏷️ ราคาหุ้นปัจจุบัน</label>
-                    <div class="flex"><input type="number" id="dv-price" value="50" class="w-full p-4 bg-gray-50 border-2 border-gray-100 border-r-0 rounded-l-2xl outline-none"><select id="dv-price-cur" class="p-4 bg-gray-100 border-2 border-gray-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div>
-                </div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-price">🏷️ ราคาหุ้นปัจจุบัน</label><input type="number" id="dv-price" value="50" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-dv-type">💰 ปันผลระบุแบบ</label>
-                    <select id="dv-type" class="w-full p-2 bg-emerald-600 text-white rounded-t-xl text-xs font-bold"><option value="annual">ต่อปี (Annual)</option><option value="period">ต่องวด (Per Period)</option></select>
-                    <div class="flex"><input type="number" id="dv-val" value="2.5" class="w-full p-4 bg-emerald-50 border-2 border-emerald-100 border-r-0 rounded-bl-2xl"><select id="dv-div-cur" class="p-4 bg-emerald-100 border-2 border-emerald-100 rounded-br-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div>
+                    <select id="dv-type" class="w-full p-4 bg-emerald-600 text-white rounded-2xl font-bold"><option value="annual">ต่อปี (Annual)</option><option value="period">ต่องวด (Per Period)</option></select>
                 </div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-dv-freq">📅 ความถี่การปันผล</label>
-                    <select id="dv-freq" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none">
-                        <option value="12">12 เดือน (รายปี)</option><option value="6">6 เดือน (ครึ่งปี)</option><option value="3">3 เดือน (รายไตรมาส)</option><option value="1">1 เดือน (รายเดือน)</option>
-                    </select>
+                    <select id="dv-freq" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"><option value="12">12 เดือน (รายปี)</option><option value="6">6 เดือน (ครึ่งปี)</option><option value="3">3 เดือน (รายไตรมาส)</option><option value="1">1 เดือน (รายเดือน)</option></select>
                 </div>
-                <div class="space-y-2">
-                    <label class="font-semibold text-gray-600" id="t-dv-dca">💸 ซื้อเพิ่มต่อเดือน (DCA)</label>
-                    <div class="flex"><input type="number" id="dv-dca" value="5000" class="w-full p-4 bg-blue-50 border-2 border-blue-100 border-r-0 rounded-l-2xl outline-none"><select id="dv-dca-cur" class="p-4 bg-blue-100 border-2 border-blue-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div>
-                </div>
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-dur">⏳ จำนวนปีที่ถือ</label><input type="number" id="dv-duration" value="10" class="w-full p-4 border-2 border-indigo-200 rounded-2xl outline-none"></div>
-                <div class="lg:col-span-3 space-y-2">
-                    <label class="font-semibold text-gray-600" id="t-dv-re">🔄 รูปแบบปันผล</label>
-                    <select id="dv-reinvest" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700">
-                        <option value="reinvest">ลงทุนเพิ่ม (Reinvest)</option><option value="cash">รับเงินสด (Cash Out)</option>
-                    </select>
-                </div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-dca">💸 DCA ต่อเดือน</label><input type="number" id="dv-dca" value="5000" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-dur">⏳ จำนวนปีที่ถือ</label><input type="number" id="dv-duration" value="10" class="w-full p-4 border-2 border-indigo-200 rounded-2xl"></div>
             </div>
 
             <button onclick="calculate()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl font-bold text-xl mb-8 shadow-lg transition-all" id="t-calc-btn">คำนวณผลลัพธ์</button>
@@ -101,44 +86,46 @@
                     <div class="bg-slate-50 p-6 rounded-2xl border"><p class="text-gray-500 text-xs uppercase" id="t-res-profit-lbl">กำไรสุทธิ</p><h2 class="text-3xl font-bold text-emerald-600"><span id="res-profit">0</span> <span class="sign"></span></h2></div>
                 </div>
                 <div class="bg-white p-4 border rounded-3xl h-[350px] mb-8"><canvas id="mainChart"></canvas></div>
-                <div class="overflow-x-auto rounded-2xl border">
-                    <table class="w-full text-left text-sm">
-                        <tbody id="res-table" class="divide-y"></tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let currentMode = 'compound'; let chart = null; let currentLang = 'th';
+        let currentMode = 'compound'; let chart = null;
 
         const translations = {
             th: {
                 title: "🚀 ระบบคำนวณการเงินและพอร์ตหุ้น",
+                navCp: "ดอกเบี้ยทบต้น", navTr: "จำลองการเทรด", navDv: "หุ้นปันผล (DCA)",
                 cur: "💰 สกุลเงินหลัก (Target)", principal: "💵 เงินต้นเริ่มต้น",
                 cpRate: "📈 กำไร (%) ต่อรอบ", cpDur: "⏳ จำนวนรอบ",
                 trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)",
                 dvShares: "📜 หุ้นเริ่มต้น (Shares)", dvPrice: "🏷️ ราคาหุ้นปัจจุบัน", dvType: "💰 ปันผลระบุแบบ",
-                dvFreq: "📅 ความถี่การปันผล", dvDca: "💸 ซื้อเพิ่มต่อเดือน (DCA)", dvDur: "⏳ จำนวนปีที่ถือ", dvRe: "🔄 รูปแบบปันผล",
+                dvFreq: "📅 ความถี่การปันผล", dvDca: "💸 DCA ต่อเดือน", dvDur: "⏳ จำนวนปีที่ถือ",
                 calc: "คำนวณผลลัพธ์", annInc: "ปันผลต่อปี (หลังภาษี)", monInc: "เงินเดือนจากหุ้น",
                 resTot: "Balance สุทธิ", resProf: "กำไรสุทธิ"
             },
             en: {
                 title: "🚀 Finance & Portfolio Simulator",
-                cur: "💰 Main Currency (Target)", principal: "💵 Initial Capital",
-                cpRate: "📈 Profit (%) per Round", cpDur: "⏳ Total Rounds",
-                trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit (Pts)", trSl: "❌ Stop Loss (Pts)",
+                navCp: "Compound Interest", navTr: "Trading Sim", navDv: "Dividend (DCA)",
+                cur: "💰 Main Currency", principal: "💵 Initial Capital",
+                cpRate: "📈 Profit (%)", cpDur: "⏳ Total Rounds",
+                trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)",
                 dvShares: "📜 Initial Shares", dvPrice: "🏷️ Stock Price", dvType: "💰 Div Input Type",
-                dvFreq: "📅 Div Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Investment Years", dvRe: "🔄 Reinvest Pattern",
+                dvFreq: "📅 Div Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Years",
                 calc: "Calculate Result", annInc: "Annual Dividend (Net)", monInc: "Monthly Passive Income",
                 resTot: "Net Balance", resProf: "Total Profit"
             }
         };
 
         function changeLang(l) {
-            currentLang = l; const t = translations[l];
+            const t = translations[l];
+            // เปลี่ยนหัวข้อและเมนู
             document.getElementById('t-title').innerText = t.title;
+            document.getElementById('nav-compound').innerText = t.navCp;
+            document.getElementById('nav-trading').innerText = t.navTr;
+            document.getElementById('nav-dividend').innerText = t.navDv;
+            // เปลี่ยน Label ทั้งหมด
             document.getElementById('t-cur-label').innerText = t.cur;
             document.getElementById('t-principal-label').innerText = t.principal;
             document.getElementById('t-cp-rate').innerText = t.cpRate;
@@ -152,14 +139,13 @@
             document.getElementById('t-dv-freq').innerText = t.dvFreq;
             document.getElementById('t-dv-dca').innerText = t.dvDca;
             document.getElementById('t-dv-dur').innerText = t.dvDur;
-            document.getElementById('t-dv-re').innerText = t.dvRe;
             document.getElementById('t-calc-btn').innerText = t.calc;
             document.getElementById('t-ann-inc-lbl').innerText = t.annInc;
             document.getElementById('t-mon-inc-lbl').innerText = t.monInc;
             document.getElementById('t-res-total-lbl').innerText = t.resTot;
             document.getElementById('t-res-profit-lbl').innerText = t.resProf;
 
-            // Update Lang Buttons
+            // ปุ่มภาษา
             document.getElementById('lang-th').className = l === 'th' ? 'py-2 px-4 rounded-xl font-bold bg-indigo-600 text-white' : 'py-2 px-4 rounded-xl font-bold text-slate-400';
             document.getElementById('lang-en').className = l === 'en' ? 'py-2 px-4 rounded-xl font-bold bg-indigo-600 text-white' : 'py-2 px-4 rounded-xl font-bold text-slate-400';
         }
@@ -174,80 +160,44 @@
             
             ['nav-compound', 'nav-trading', 'nav-dividend'].forEach(id => {
                 const btn = document.getElementById(id);
-                btn.className = id.includes(m) ? "py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
+                const isActive = id.includes(m);
+                btn.className = isActive ? "py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
             });
-        }
-
-        async function getRates(base) {
-            try { const res = await fetch(`https://open.er-api.com/v6/latest/${base}`); const data = await res.json(); return data.rates; } 
-            catch(e) { return { "THB": 1, "USD": 0.028 }; }
         }
 
         async function calculate() {
             const mainCur = document.getElementById('mainCurrency').value;
-            const rates = await getRates(mainCur);
-            const toMain = (val, from) => val / rates[from];
-            
-            document.getElementById('results').classList.remove('hidden');
             document.querySelectorAll('.sign').forEach(el => el.innerText = mainCur);
-            const table = document.getElementById('res-table'); table.innerHTML = '';
-            
+            document.getElementById('results').classList.remove('hidden');
             let labels = ['0'], dataPoints = [], totalBal = 0, profit = 0;
 
             if (currentMode === 'compound') {
                 let p = parseFloat(document.getElementById('principal').value), r = parseFloat(document.getElementById('cp-rate').value)/100, d = parseInt(document.getElementById('cp-duration').value);
                 totalBal = p; dataPoints.push(p);
-                for(let i=1; i<=d; i++) {
-                    let g = totalBal * r; totalBal += g;
-                    labels.push(i); dataPoints.push(totalBal.toFixed(2));
-                    table.innerHTML += `<tr><td class="p-4">Round ${i}</td><td class="p-4 text-right">${(totalBal-g).toLocaleString()}</td><td class="p-4 text-right text-green-600">+${g.toLocaleString()}</td><td class="p-4 text-right font-bold">${totalBal.toLocaleString()}</td></tr>`;
-                }
+                for(let i=1; i<=d; i++) { totalBal *= (1+r); labels.push(i); dataPoints.push(totalBal.toFixed(2)); }
                 profit = totalBal - p;
-            } 
-            else if (currentMode === 'dividend') {
+            } else if (currentMode === 'dividend') {
                 document.getElementById('analysis-div').classList.remove('hidden');
-                let s = parseFloat(document.getElementById('dv-shares').value);
-                let pStk = toMain(parseFloat(document.getElementById('dv-price').value), document.getElementById('dv-price-cur').value);
-                let divVal = toMain(parseFloat(document.getElementById('dv-val').value), document.getElementById('dv-div-cur').value);
-                let dca = toMain(parseFloat(document.getElementById('dv-dca').value), document.getElementById('dv-dca-cur').value);
-                let dur = parseInt(document.getElementById('dv-duration').value);
-                let freq = parseInt(document.getElementById('dv-freq').value);
-                let dType = document.getElementById('dv-type').value;
-                let isReinvest = document.getElementById('dv-reinvest').value === 'reinvest';
-
-                let annualDivPerShare = (dType === 'annual') ? divVal : divVal * (12/freq);
-                let divPerPeriod = annualDivPerShare / (12/freq);
-                let accCash = 0, invested = s * pStk;
-                dataPoints.push(s * pStk);
-
+                let s = parseFloat(document.getElementById('dv-shares').value), pStk = parseFloat(document.getElementById('dv-price').value), dVal = parseFloat(document.getElementById('dv-val').value), dca = parseFloat(document.getElementById('dv-dca').value), dur = parseInt(document.getElementById('dv-duration').value), freq = parseInt(document.getElementById('dv-freq').value), type = document.getElementById('dv-type').value;
+                let annualDiv = (type === 'annual') ? dVal : dVal * (12/freq);
+                let perDiv = annualDiv / (12/freq);
                 for(let y=1; y<=dur; y++) {
-                    let yearDiv = 0;
                     for(let m=1; m<=12; m++) {
-                        s += dca / pStk; invested += dca;
-                        if (m % freq === 0) {
-                            let paid = (s * divPerPeriod) * 0.9;
-                            yearDiv += paid;
-                            if(isReinvest) s += paid / pStk; else accCash += paid;
-                        }
+                        s += dca/pStk;
+                        if(m%freq===0) s += ((s*perDiv)*0.9)/pStk;
                     }
-                    totalBal = (s * pStk) + accCash;
-                    labels.push('Y' + y); dataPoints.push(totalBal.toFixed(2));
-                    table.innerHTML += `<tr><td class="p-4 font-bold">Year ${y}</td><td class="p-4 text-right">${s.toLocaleString(undefined,{maximumFractionDigits:0})} Shares</td><td class="p-4 text-right text-emerald-600">+${yearDiv.toLocaleString()}</td><td class="p-4 text-right font-bold">${totalBal.toLocaleString()}</td></tr>`;
+                    labels.push('Y'+y); dataPoints.push((s*pStk).toFixed(2));
                 }
-                profit = totalBal - invested;
-                let annInc = (s * annualDivPerShare) * 0.9;
-                document.getElementById('res-ann-inc').innerText = annInc.toLocaleString(undefined,{maximumFractionDigits:2});
-                document.getElementById('res-mon-inc').innerText = (annInc / 12).toLocaleString(undefined,{maximumFractionDigits:2});
+                totalBal = s * pStk; profit = totalBal - (parseFloat(document.getElementById('dv-shares').value)*pStk + (dca*12*dur));
+                let annInc = (s * annualDiv) * 0.9;
+                document.getElementById('res-ann-inc').innerText = annInc.toLocaleString();
+                document.getElementById('res-mon-inc').innerText = (annInc/12).toLocaleString();
             }
 
-            document.getElementById('res-total').innerText = totalBal.toLocaleString(undefined,{maximumFractionDigits:2});
-            document.getElementById('res-profit').innerText = profit.toLocaleString(undefined,{maximumFractionDigits:2});
-            
+            document.getElementById('res-total').innerText = totalBal.toLocaleString();
+            document.getElementById('res-profit').innerText = profit.toLocaleString();
             if(chart) chart.destroy();
-            chart = new Chart(document.getElementById('mainChart'), {
-                type: 'line', data: { labels, datasets: [{ label: 'Value', data: dataPoints, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)' }] },
-                options: { responsive: true, maintainAspectRatio: false }
-            });
+            chart = new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels, datasets: [{ data: dataPoints, borderColor: '#4f46e5', tension: 0.3 }] } });
         }
     </script>
 </body>
