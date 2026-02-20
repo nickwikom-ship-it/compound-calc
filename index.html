@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Master Pro - Final Luxury Edition</title>
+    <title>Investment Calculation</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
     <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
         
         <div class="bg-slate-900 p-8 text-white text-center border-b-4 border-indigo-600">
-            <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 ระบบคำนวณการเงิน (Final Luxury)</h1>
+            <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 ระบบคำนวณการเงิน</h1>
             <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
                 <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700">
                     <button onclick="switchMode('compound')" id="nav-compound" class="mode-btn py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white">ดอกเบี้ยทบต้น</button>
@@ -116,8 +116,8 @@
         }
 
         const dict = {
-            th: { title: "🚀 ระบบคำนวณการเงิน (Final Luxury)", navCp: "ดอกเบี้ยทบต้น", navTr: "จำลองการเทรด", navDv: "หุ้นปันผล (DCA)", cur: "💰 สกุลเงินหลัก (Target)", principal: "💵 เงินต้นเริ่มต้น", cpRate: "📈 กำไร (%) ต่อรอบ", cpDur: "⏳ จำนวนรอบ", trDurLabel: "⏳ จำนวนรอบเทรด", trMode: "🛠️ รูปแบบการคุม Lot", trLotVal: "📦 ค่า Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)", dvShares: "📜 หุ้นเริ่มต้น (Shares)", dvPrice: "🏷️ ราคาหุ้นปัจจุบัน", dvVal: "💰 ปันผลต่อหุ้น", dvTax: "✂️ หักภาษี (%)", dvFreq: "📅 ความถี่จ่ายปันผล", dvDca: "💸 DCA ต่อเดือน", dvDur: "⏳ จำนวนปีที่ลงทุน", calcBtn: "คำนวณผลลัพธ์", annIncLbl: "ปันผลต่อปี (หลังหักภาษี)", monIncLbl: "รายได้เฉลี่ยต่อเดือน", resTotalLbl: "มูลค่าพอร์ตสุทธิ", resProfitLbl: "กำไร/ปันผลสะสม" },
-            en: { title: "🚀 Portfolio Pro (Final Verified)", navCp: "Compound", navTr: "Trading Sim", navDv: "Dividend Stock", cur: "💰 Main Currency", principal: "💵 Initial Capital", cpRate: "📈 Profit (%)", cpDur: "⏳ Rounds", trDurLabel: "⏳ Trade Rounds", trMode: "🛠️ Lot Mode", trLotVal: "📦 Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit", trSl: "❌ Stop Loss", dvShares: "📜 Start Shares", dvPrice: "🏷️ Stock Price", dvVal: "💰 Dividend/Share", dvTax: "✂️ Tax (%)", dvFreq: "📅 Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Years", calcBtn: "Calculate", annIncLbl: "Annual Div (After Tax)", monIncLbl: "Monthly Income", resTotalLbl: "Net Portfolio Value", resProfitLbl: "Total Profit" }
+            th: { title: "🚀 ระบบคำนวณการเงิน", navCp: "ดอกเบี้ยทบต้น", navTr: "จำลองการเทรด", navDv: "หุ้นปันผล (DCA)", cur: "💰 สกุลเงินหลัก (Target)", principal: "💵 เงินต้นเริ่มต้น", cpRate: "📈 กำไร (%) ต่อรอบ", cpDur: "⏳ จำนวนรอบ", trDurLabel: "⏳ จำนวนรอบเทรด", trMode: "🛠️ รูปแบบการคุม Lot", trLotVal: "📦 ค่า Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)", dvShares: "📜 หุ้นเริ่มต้น (Shares)", dvPrice: "🏷️ ราคาหุ้นปัจจุบัน", dvVal: "💰 ปันผลต่อหุ้น", dvTax: "✂️ หักภาษี (%)", dvFreq: "📅 ความถี่จ่ายปันผล", dvDca: "💸 DCA ต่อเดือน", dvDur: "⏳ จำนวนปีที่ลงทุน", calcBtn: "คำนวณผลลัพธ์", annIncLbl: "ปันผลต่อปี (หลังหักภาษี)", monIncLbl: "รายได้เฉลี่ยต่อเดือน", resTotalLbl: "มูลค่าพอร์ตสุทธิ", resProfitLbl: "กำไร/ปันผลสะสม" },
+            en: { title: "🚀 Investment Calculatior", navCp: "Compound", navTr: "Trading Sim", navDv: "Dividend Stock", cur: "💰 Main Currency", principal: "💵 Initial Capital", cpRate: "📈 Profit (%)", cpDur: "⏳ Rounds", trDurLabel: "⏳ Trade Rounds", trMode: "🛠️ Lot Mode", trLotVal: "📦 Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit", trSl: "❌ Stop Loss", dvShares: "📜 Start Shares", dvPrice: "🏷️ Stock Price", dvVal: "💰 Dividend/Share", dvTax: "✂️ Tax (%)", dvFreq: "📅 Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Years", calcBtn: "Calculate", annIncLbl: "Annual Div (After Tax)", monIncLbl: "Monthly Income", resTotalLbl: "Net Portfolio Value", resProfitLbl: "Total Profit" }
         };
 
         function updateAllUI() {
@@ -209,3 +209,4 @@
     </script>
 </body>
 </html>
+
