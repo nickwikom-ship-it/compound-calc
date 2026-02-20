@@ -3,82 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compound Interest Calculator Multi-Currency</title>
+    <title>Trading Simulator Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
     <style>body { font-family: 'Kanit', sans-serif; }</style>
 </head>
 <body class="bg-slate-100 min-h-screen p-4 md:p-8">
-    <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <div class="bg-gradient-to-r from-blue-700 to-indigo-600 p-8 text-white text-center">
-            <h1 class="text-3xl font-bold">📊 เครื่องคำนวณดอกเบี้ยทบต้น</h1>
-            <p class="opacity-80 mt-2">วางแผนการเติบโตของพอร์ตการลงทุนของคุณ</p>
+    <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <div class="bg-gradient-to-r from-slate-800 to-indigo-900 p-8 text-white text-center">
+            <h1 class="text-3xl font-bold">🚀 Trading Growth Simulator</h1>
+            <p class="opacity-80 mt-2">จำลองการเทรดทบต้นตามกลยุทธ์และ Win Rate</p>
         </div>
 
         <div class="p-6 md:p-10">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div class="space-y-2">
-                    <label class="font-semibold text-gray-700">💰 เงินต้น & สกุลเงิน</label>
-                    <div class="flex">
-                        <select id="currency" class="p-4 bg-indigo-50 border border-r-0 rounded-l-2xl outline-none text-indigo-700 font-bold">
-                            <option value="฿">THB (฿)</option>
-                            <option value="$">USD ($)</option>
-                            <option value="€">EUR (€)</option>
-                        </select>
-                        <input type="number" id="principal" value="10000" class="w-full p-4 bg-gray-50 border rounded-r-2xl outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">💰 เงินต้น & สกุลเงิน</label>
+                        <div class="flex">
+                            <select id="currency" class="p-3 bg-indigo-50 border border-r-0 rounded-l-xl outline-none text-indigo-700 font-bold">
+                                <option value="฿">THB</option>
+                                <option value="$">USD</option>
+                                <option value="€">EUR</option>
+                            </select>
+                            <input type="number" id="principal" value="10000" class="w-full p-3 bg-gray-50 border rounded-r-xl outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">🎯 Win Rate (%)</label>
+                        <input type="number" id="winRate" value="60" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
                     </div>
                 </div>
-                <div class="space-y-2">
-                    <label class="font-semibold text-gray-700">📈 กำไร (%)</label>
-                    <div class="flex">
-                        <input type="number" id="rate" value="5" class="w-full p-4 bg-gray-50 border rounded-l-2xl outline-none focus:ring-2 focus:ring-indigo-500">
-                        <select id="ratePeriod" class="p-4 bg-indigo-50 border border-l-0 rounded-r-2xl outline-none text-indigo-700 font-bold">
-                            <option value="วัน">ต่อวัน</option>
-                            <option value="เดือน">ต่อเดือน</option>
-                            <option value="ปี" selected>ต่อปี</option>
-                        </select>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">✅ Take Profit (Points)</label>
+                        <input type="number" id="tpPoints" value="500" class="w-full p-3 bg-green-50 border border-green-200 rounded-xl outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">❌ Stop Loss (Points)</label>
+                        <input type="number" id="slPoints" value="250" class="w-full p-3 bg-red-50 border border-red-200 rounded-xl outline-none">
                     </div>
                 </div>
-                <div class="space-y-2">
-                    <label class="font-semibold text-gray-700">⏳ ระยะเวลา (<span id="unitLabel">ปี</span>)</label>
-                    <div class="flex gap-2">
-                        <input type="number" id="duration" value="12" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500">
-                        <button onclick="calculate()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 rounded-2xl font-bold shadow-lg transition-all active:scale-95">คำนวณ</button>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">📦 จำนวน Lot</label>
+                        <input type="number" id="lotSize" value="0.1" step="0.01" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
                     </div>
+                    <div>
+                        <label class="block font-semibold text-gray-700 mb-1">🔄 จำนวนไม้ที่เทรด</label>
+                        <input type="number" id="totalTrades" value="20" class="w-full p-3 bg-gray-50 border rounded-xl outline-none">
+                    </div>
+                </div>
+
+                <div class="flex flex-col justify-end">
+                    <button onclick="simulate()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-bold shadow-lg transition-all active:scale-95">เริ่มจำลองการเทรด</button>
+                    <div class="mt-4 text-center text-sm text-gray-500">ระบบจะทำการสุ่มผลลัพธ์ตาม Win Rate</div>
                 </div>
             </div>
 
             <div id="results" class="hidden animate-in fade-in duration-500">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                    <div class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100">
-                        <p class="text-indigo-600 text-sm font-bold uppercase">เงินรวมสุทธิ (<span class="currencyText"></span>)</p>
-                        <h2 class="text-4xl font-bold text-indigo-900 mt-1"><span class="currencySign"></span> <span id="totalAmount">0.00</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 text-center">
+                    <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
+                        <p class="text-xs font-bold text-indigo-500 uppercase">Balance สุทธิ</p>
+                        <h2 class="text-3xl font-bold text-indigo-900"><span class="curSign"></span> <span id="finalBalance">0</span></h2>
                     </div>
-                    <div class="bg-emerald-50 p-6 rounded-3xl border border-emerald-100">
-                        <p class="text-emerald-600 text-sm font-bold uppercase">กำไรทั้งหมด (<span class="currencyText"></span>)</p>
-                        <h2 class="text-4xl font-bold text-emerald-700 mt-1"><span class="currencySign"></span> <span id="totalProfit">0.00</span></h2>
+                    <div class="bg-green-50 p-6 rounded-2xl border border-green-100">
+                        <p class="text-xs font-bold text-green-500 uppercase">กำไร/ขาดทุนรวม</p>
+                        <h2 id="netProfit" class="text-3xl font-bold text-green-700">0</h2>
+                    </div>
+                    <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100">
+                        <p class="text-xs font-bold text-amber-500 uppercase">Risk:Reward Ratio</p>
+                        <h2 id="rrRatio" class="text-3xl font-bold text-amber-700">1:2</h2>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div class="bg-white p-4 border rounded-3xl shadow-sm">
-                        <h3 class="font-bold text-gray-800 mb-4 ml-2">📈 กราฟแสดงผล</h3>
-                        <div style="height: 350px;"><canvas id="chart"></canvas></div>
+                        <h3 class="font-bold text-gray-800 mb-4 ml-2">📉 เส้นทางการเติบโต (Equity Curve)</h3>
+                        <div style="height: 350px;"><canvas id="tradeChart"></canvas></div>
                     </div>
                     <div class="bg-white border rounded-3xl shadow-sm overflow-hidden">
-                        <h3 class="font-bold text-gray-800 p-4 border-b bg-gray-50">📝 รายละเอียดรายงวด</h3>
+                        <h3 class="font-bold text-gray-800 p-4 border-b bg-gray-50">📝 บันทึกการเทรดรายไม้</h3>
                         <div class="overflow-y-auto max-h-[310px]">
                             <table class="w-full text-left">
-                                <thead class="bg-white sticky top-0 shadow-sm">
+                                <thead class="bg-white sticky top-0 shadow-sm text-xs text-gray-500 font-bold uppercase">
                                     <tr>
-                                        <th class="p-4 text-xs font-bold text-gray-500">งวด</th>
-                                        <th class="p-4 text-xs font-bold text-gray-500 text-right">เงินต้น</th>
-                                        <th class="p-4 text-xs font-bold text-gray-500 text-right text-emerald-600">กำไร</th>
-                                        <th class="p-4 text-xs font-bold text-gray-500 text-right">เงินรวม</th>
+                                        <th class="p-4">ไม้ที่</th>
+                                        <th class="p-4 text-center">สถานะ</th>
+                                        <th class="p-4 text-right">กำไร/ขาดทุน</th>
+                                        <th class="p-4 text-right">Balance</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tableBody" class="divide-y"></tbody>
+                                <tbody id="tradeTable" class="divide-y"></tbody>
                             </table>
                         </div>
                     </div>
@@ -89,98 +108,78 @@
 
     <script>
         let chart = null;
-        const ratePeriod = document.getElementById('ratePeriod');
-        const currencySelect = document.getElementById('currency');
 
-        ratePeriod.addEventListener('change', (e) => {
-            document.getElementById('unitLabel').innerText = e.target.value;
-        });
+        function simulate() {
+            const principal = parseFloat(document.getElementById('principal').value);
+            const winRate = parseFloat(document.getElementById('winRate').value) / 100;
+            const tpPoints = parseFloat(document.getElementById('tpPoints').value);
+            const slPoints = parseFloat(document.getElementById('slPoints').value);
+            const lot = parseFloat(document.getElementById('lotSize').value);
+            const totalTrades = parseInt(document.getElementById('totalTrades').value);
+            const symbol = document.getElementById('currency').value;
 
-        function calculate() {
-            const p = parseFloat(document.getElementById('principal').value);
-            const r = parseFloat(document.getElementById('rate').value) / 100;
-            const t = parseInt(document.getElementById('duration').value);
-            const period = ratePeriod.value;
-            const symbol = currencySelect.value;
-            const currencyName = currencySelect.options[currencySelect.selectedIndex].text.split(' ')[0];
-            
-            if(!p || isNaN(t) || t <= 0) return alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+            if(!principal || isNaN(totalTrades)) return alert("กรุณากรอกข้อมูลให้ครบถ้วน");
 
             document.getElementById('results').classList.remove('hidden');
+            document.querySelectorAll('.curSign').forEach(el => el.innerText = symbol);
             
-            // Update Currency Text
-            document.querySelectorAll('.currencySign').forEach(el => el.innerText = symbol);
-            document.querySelectorAll('.currencyText').forEach(el => el.innerText = currencyName);
+            // RR Calculation
+            document.getElementById('rrRatio').innerText = `1:${(tpPoints/slPoints).toFixed(1)}`;
 
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-
-            let current = p;
+            let currentBalance = principal;
             let labels = ['เริ่ม'];
-            let values = [p.toFixed(2)];
+            let dataPoints = [principal];
+            const tableBody = document.getElementById('tradeTable');
+            tableBody.innerHTML = '';
 
-            for(let i=1; i<=t; i++) {
-                let interest = current * r;
-                let start = current;
-                current += interest;
+            for(let i=1; i<=totalTrades; i++) {
+                const isWin = Math.random() < winRate;
+                const profitLoss = isWin ? (tpPoints * lot) : -(slPoints * lot);
+                currentBalance += profitLoss;
 
-                tbody.innerHTML += `<tr class="hover:bg-gray-50 transition">
+                const statusClass = isWin ? 'text-green-600 bg-green-50' : 'text-red-600 bg-red-50';
+                const statusText = isWin ? 'Win ✅' : 'Loss ❌';
+
+                tableBody.innerHTML += `<tr>
                     <td class="p-4 text-sm font-medium text-gray-400">${i}</td>
-                    <td class="p-4 text-sm text-right text-gray-500">${start.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}</td>
-                    <td class="p-4 text-sm text-right text-emerald-600 font-bold">+${interest.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}</td>
-                    <td class="p-4 text-sm text-right font-bold text-gray-800">${current.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 rounded-lg text-xs font-bold ${statusClass}">${statusText}</span></td>
+                    <td class="p-4 text-sm text-right font-bold ${isWin ? 'text-green-600' : 'text-red-600'}">${profitLoss > 0 ? '+' : ''}${profitLoss.toLocaleString()}</td>
+                    <td class="p-4 text-sm text-right font-bold text-gray-800">${currentBalance.toLocaleString()}</td>
                 </tr>`;
-                
-                labels.push(period + ' ' + i);
-                values.push(current.toFixed(2));
+
+                labels.push('ไม้ที่ ' + i);
+                dataPoints.push(currentBalance.toFixed(2));
             }
 
-            document.getElementById('totalAmount').innerText = current.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
-            document.getElementById('totalProfit').innerText = (current - p).toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:2});
+            document.getElementById('finalBalance').innerText = currentBalance.toLocaleString();
+            const net = currentBalance - principal;
+            document.getElementById('netProfit').innerText = (net > 0 ? '+' : '') + net.toLocaleString();
+            document.getElementById('netProfit').className = `text-3xl font-bold ${net >= 0 ? 'text-green-700' : 'text-red-700'}`;
 
-            updateChart(labels, values, symbol);
+            updateChart(labels, dataPoints, symbol);
         }
 
         function updateChart(labels, data, symbol) {
-            const ctx = document.getElementById('chart').getContext('2d');
+            const ctx = document.getElementById('tradeChart').getContext('2d');
             if(chart) chart.destroy();
-
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'เงินรวมทั้งหมด',
+                        label: 'Equity Curve',
                         data: data,
                         borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        backgroundColor: 'rgba(79, 70, 229, 0.05)',
                         fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#fff',
-                        pointBorderColor: '#4f46e5',
-                        pointBorderWidth: 2
+                        tension: 0.3,
+                        borderWidth: 3
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => ` ${symbol}${parseFloat(ctx.raw).toLocaleString()}`
-                            }
-                        }
-                    },
-                    scales: {
-                        y: { 
-                            ticks: { callback: (val) => symbol + val.toLocaleString() },
-                            grid: { color: '#f1f5f9' }
-                        },
-                        x: { grid: { display: false } }
-                    }
+                    scales: { y: { ticks: { callback: v => symbol + v.toLocaleString() } } }
                 }
             });
         }
