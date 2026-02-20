@@ -53,10 +53,11 @@
                 </div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-freq">📅 ความถี่การปันผล</label>
-                    <select id="divFreq" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none">
+                    <select id="divFreq" onchange="updateDurationLabel()" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none">
                         <option value="12" id="opt-12m">ทุก 12 เดือน (รายปี)</option>
                         <option value="6" id="opt-6m">ทุก 6 เดือน (ครึ่งปี)</option>
                         <option value="3" id="opt-3m">ทุก 3 เดือน (รายไตรมาส)</option>
+                        <option value="1" id="opt-1m">ทุก 1 เดือน (รายเดือน)</option>
                     </select>
                 </div>
                 <div class="space-y-2">
@@ -64,7 +65,7 @@
                     <div class="flex"><input type="number" id="monthlyBuy" value="5000" class="w-full p-4 bg-blue-50 border-2 border-blue-100 border-r-0 rounded-l-2xl outline-none"><select id="dcaCur" class="p-4 bg-blue-100 border-2 border-blue-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option><option value="EUR">EUR</option></select></div>
                 </div>
                 <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tax">🧾 ภาษีปันผล (%)</label><input type="number" id="divTax" value="10" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-years">⏳ จำนวนปีที่ถือ</label><input type="number" id="divYears" value="10" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-duration-label">⏳ ระยะเวลาลงทุน (ปี)</label><input type="number" id="divDuration" value="5" class="w-full p-4 border-2 border-indigo-200 rounded-2xl focus:border-indigo-500 outline-none"></div>
                 <div class="space-y-2 lg:col-span-2">
                     <label class="font-semibold text-gray-600" id="t-reinvest">🔄 รูปแบบปันผล</label>
                     <select id="divReinvest" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700">
@@ -73,9 +74,6 @@
                 </div>
             </div>
 
-            <div id="input-compound" class="hidden"></div>
-            <div id="input-trading" class="hidden"></div>
-
             <button id="calcBtn" onclick="processCalculation()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl font-bold text-xl mb-4 shadow-lg active:scale-95 transition-all">
                 <span id="t-btn-calc">คำนวณผลลัพธ์</span>
             </button>
@@ -83,11 +81,11 @@
 
             <div id="results" class="hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 text-center">
-                    <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100">
+                    <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 shadow-sm">
                         <p class="text-indigo-600 text-xs font-bold uppercase mb-2" id="t-res-total">Balance สุทธิ</p>
                         <h2 class="text-3xl md:text-4xl font-bold text-indigo-900"><span id="resTotal">0</span> <span class="mainSign"></span></h2>
                     </div>
-                    <div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100">
+                    <div class="bg-emerald-50 p-8 rounded-3xl border border-emerald-100 shadow-sm">
                         <p class="text-emerald-600 text-xs font-bold uppercase mb-2" id="t-res-profit">กำไรทั้งหมด</p>
                         <h2 class="text-3xl md:text-4xl font-bold text-emerald-700"><span id="resProfit">0</span> <span class="mainSign"></span></h2>
                     </div>
@@ -96,17 +94,16 @@
                     <div class="bg-white p-6 border rounded-3xl h-[400px] shadow-sm"><canvas id="mainChart"></canvas></div>
                     <div class="bg-white border rounded-3xl overflow-hidden shadow-sm">
                         <div class="font-bold p-5 border-b bg-gray-50 flex justify-between items-center">
-                            <span id="t-table-label">รายละเอียดรายปี</span>
-                            <span class="text-xs text-indigo-600 font-normal">*รวมผลจากการ DCA และปันผลสะสม</span>
+                            <span id="t-table-label">รายละเอียดรายงวด</span>
                         </div>
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
                             <table class="w-full text-left text-sm">
                                 <thead class="bg-white sticky top-0 shadow-sm text-[10px] font-bold text-gray-400 uppercase">
                                     <tr>
-                                        <th class="p-4" id="t-col-id">Year</th>
-                                        <th class="p-4 text-right" id="t-col-shares">Total Shares</th>
-                                        <th class="p-4 text-right" id="t-col-div">Dividends (Year)</th>
-                                        <th class="p-4 text-right" id="t-col-end">Portfolio Value</th>
+                                        <th class="p-4" id="t-col-id">งวดที่</th>
+                                        <th class="p-4 text-right" id="t-col-shares">จำนวนหุ้นสะสม</th>
+                                        <th class="p-4 text-right" id="t-col-div">ปันผลที่ได้รับ</th>
+                                        <th class="p-4 text-right" id="t-col-end">มูลค่าพอร์ต</th>
                                     </tr>
                                 </thead>
                                 <tbody id="resTable" class="divide-y"></tbody>
@@ -117,7 +114,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
-                <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 flex flex-col items-center justify-center text-center">
+                <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 text-center flex flex-col justify-center">
                     <h3 class="font-bold text-indigo-900 text-xl mb-1" id="t-footer">👨‍💻 จัดทำโดย</h3>
                     <p class="text-indigo-700 font-bold text-2xl tracking-wide">nick.wl</p>
                 </div>
@@ -138,27 +135,40 @@
             th: {
                 title: "🚀 เครื่องมือคำนวณการเงินและการเทรด", modeC: "ดอกเบี้ยทบต้น", modeT: "จำลองการเทรด", modeD: "หุ้นปันผล",
                 mainCur: "💰 สกุลเงินหลัก (Target Currency)", principal: "💵 เงินต้นเริ่มต้น",
-                shares: "📜 หุ้นเริ่มต้น (Shares)", stkPrice: "🏷️ ราคาหุ้นปัจจุบัน", divPS: "💰 ปันผลต่อหุ้น (ต่อปี)", freq: "📅 ความถี่การปันผล", dca: "💸 ซื้อเพิ่มต่อเดือน (DCA)", tax: "🧾 ภาษีปันผล (%)", years: "⏳ จำนวนปีที่ถือ", reinvest: "🔄 รูปแบบปันผล",
-                opt12m: "ทุก 12 เดือน (รายปี)", opt6m: "ทุก 6 เดือน (ครึ่งปี)", opt3m: "ทุก 3 เดือน (รายไตรมาส)",
+                shares: "📜 หุ้นเริ่มต้น (Shares)", stkPrice: "🏷️ ราคาหุ้นปัจจุบัน", divPS: "💰 ปันผลต่อหุ้น (ต่อปี)", freq: "📅 ความถี่การปันผล", dca: "💸 ซื้อเพิ่มต่อเดือน (DCA)", tax: "🧾 ภาษีปันผล (%)", 
+                yearsLabel: "⏳ ระยะเวลาลงทุน (ปี)", monthsLabel: "⏳ ระยะเวลาลงทุน (เดือน)", reinvest: "🔄 รูปแบบปันผล",
+                opt12m: "ทุก 12 เดือน (รายปี)", opt6m: "ทุก 6 เดือน (ครึ่งปี)", opt3m: "ทุก 3 เดือน (รายไตรมาส)", opt1m: "ทุก 1 เดือน (รายเดือน)",
                 optCash: "รับเงินสด (Cash Out)", optReinvest: "ลงทุนเพิ่ม (Reinvest)", btnCalc: "คำนวณผลลัพธ์", resTotal: "Balance สุทธิ", resProfit: "กำไรทั้งหมด",
-                tableLabel: "รายละเอียดรายปี", colId: "ปีที่", colShares: "จำนวนหุ้นสะสม", colDiv: "ปันผลที่ได้รับ (ปี)", colEnd: "มูลค่าพอร์ต", footer: "👨‍💻 จัดทำโดย",
+                tableLabel: "รายละเอียดรายงวด", colId: "งวดที่", colShares: "หุ้นสะสม", colDiv: "ปันผล/งวด", colEnd: "รวมมูลค่า", footer: "👨‍💻 จัดทำโดย",
                 reqTitle: "💡 อยากให้เพิ่มเติมอะไร?", reqBtn: "ส่ง", reqAlert: "กรุณากรอกข้อความก่อนส่ง"
             },
             en: {
                 title: "🚀 Finance & Trading Simulator", modeC: "Compound", modeT: "Trading", modeD: "Dividend",
                 mainCur: "💰 Target Currency", principal: "💵 Initial Capital",
-                shares: "📜 Initial Shares", stkPrice: "🏷️ Stock Price", divPS: "💰 Div/Share (Annual)", freq: "📅 Div Frequency", dca: "💸 Monthly DCA", tax: "🧾 Tax (%)", years: "⏳ Years Held", reinvest: "🔄 Dividend Strategy",
-                opt12m: "Every 12 Months", opt6m: "Every 6 Months", opt3m: "Every 3 Months",
+                shares: "📜 Initial Shares", stkPrice: "🏷️ Stock Price", divPS: "💰 Div/Share (Annual)", freq: "📅 Div Frequency", dca: "💸 Monthly DCA", tax: "🧾 Tax (%)", 
+                yearsLabel: "⏳ Duration (Years)", monthsLabel: "⏳ Duration (Months)", reinvest: "🔄 Dividend Strategy",
+                opt12m: "Every 12 Months", opt6m: "Every 6 Months", opt3m: "Every 3 Months", opt1m: "Every 1 Month",
                 optCash: "Cash Out", optReinvest: "Reinvest", btnCalc: "Calculate Results", resTotal: "Net Balance", resProfit: "Total Profit",
-                tableLabel: "Yearly Breakdown", colId: "Year", colShares: "Total Shares", colDiv: "Annual Dividend", colEnd: "Portfolio Value", footer: "👨‍💻 Created by",
+                tableLabel: "Detailed Report", colId: "Period", colShares: "Accum. Shares", colDiv: "Div/Period", colEnd: "Value", footer: "👨‍💻 Created by",
                 reqTitle: "💡 Suggestions?", reqBtn: "Send", reqAlert: "Please enter your suggestion"
             }
         };
 
+        function updateDurationLabel() {
+            const freq = document.getElementById('divFreq').value;
+            const label = document.getElementById('t-duration-label');
+            if (freq == "1") {
+                label.innerText = currentLang === 'th' ? i18n.th.monthsLabel : i18n.en.monthsLabel;
+            } else {
+                label.innerText = currentLang === 'th' ? i18n.th.yearsLabel : i18n.en.yearsLabel;
+            }
+        }
+
         function changeLang(lang) {
             currentLang = lang; const c = i18n[lang];
             Object.keys(c).forEach(key => { const el = document.getElementById('t-'+key.replace(/([A-Z])/g, "-$1").toLowerCase()); if(el) el.innerText = c[key]; });
-            document.getElementById('opt-12m').innerText = c.opt12m; document.getElementById('opt-6m').innerText = c.opt6m; document.getElementById('opt-3m').innerText = c.opt3m;
+            updateDurationLabel();
+            document.getElementById('opt-12m').innerText = c.opt12m; document.getElementById('opt-6m').innerText = c.opt6m; document.getElementById('opt-3m').innerText = c.opt3m; document.getElementById('opt-1m').innerText = c.opt1m;
             document.getElementById('opt-cash').innerText = c.optCash; document.getElementById('opt-reinvest').innerText = c.optReinvest;
             document.getElementById('t-btn-calc').innerText = c.btnCalc;
             document.getElementById('requestInput').placeholder = lang === 'th' ? "แนะนำฟีเจอร์..." : "Suggest a feature...";
@@ -180,7 +190,7 @@
             const mainCur = document.getElementById('mainCurrency').value; const rates = await getRates(mainCur); const toMain = (val, fromCur) => val / rates[fromCur];
             document.getElementById('results').classList.remove('hidden'); document.querySelectorAll('.mainSign').forEach(el => el.innerText = mainCur);
             const tableBody = document.getElementById('resTable'); tableBody.innerHTML = '';
-            let labels = ['0'], dataPoints = [], finalBalance = 0, totalProfit = 0;
+            let labels = ['Start'], dataPoints = [], finalBalance = 0, totalProfit = 0;
 
             if (currentMode === 'dividend') {
                 let s = parseFloat(document.getElementById('shares').value);
@@ -192,7 +202,7 @@
                 let mCur = document.getElementById('dcaCur').value;
                 let freq = parseInt(document.getElementById('divFreq').value);
                 let tax = parseFloat(document.getElementById('divTax').value)/100;
-                let years = parseInt(document.getElementById('divYears').value);
+                let duration = parseInt(document.getElementById('divDuration').value);
                 let mode = document.getElementById('divReinvest').value;
 
                 let stockPriceMain = toMain(pStock, pCur);
@@ -200,38 +210,39 @@
                 let dcaMain = toMain(mBuy, mCur);
                 let totalInvestedMain = s * stockPriceMain;
                 let accCashMain = 0;
+                let totalMonths = (freq === 1) ? duration : duration * 12;
 
                 dataPoints.push((s * stockPriceMain).toFixed(2));
                 
-                for(let y=1; y<=years; y++) {
-                    let yearlyDivCollected = 0;
-                    // ใน 1 ปี มี 12 เดือน
-                    for(let m=1; m<=12; m++) {
-                        // DCA ทุกเดือน
-                        s += dcaMain / stockPriceMain;
-                        totalInvestedMain += dcaMain;
+                for(let m=1; m<=totalMonths; m++) {
+                    // DCA ทุกเดือน
+                    s += dcaMain / stockPriceMain;
+                    totalInvestedMain += dcaMain;
 
-                        // จ่ายปันผลตามความถี่ (เช่น ทุก 3 เดือน)
-                        if (m % freq === 0) {
-                            let divThisPeriod = (s * (divMainAnnual / (12/freq))) * (1 - tax);
-                            yearlyDivCollected += divThisPeriod;
-                            if(mode === 'reinvest') {
-                                s += divThisPeriod / stockPriceMain;
-                            } else {
-                                accCashMain += divThisPeriod;
-                            }
+                    let divThisMonth = 0;
+                    if (m % freq === 0) {
+                        divThisMonth = (s * (divMainAnnual / (12/freq))) * (1 - tax);
+                        if(mode === 'reinvest') {
+                            s += divThisMonth / stockPriceMain;
+                        } else {
+                            accCashMain += divThisMonth;
                         }
                     }
                     
                     let portfolioVal = (s * stockPriceMain) + (mode === 'cash' ? accCashMain : 0);
-                    tableBody.innerHTML += `<tr>
-                        <td class="p-4 font-bold">${y}</td>
-                        <td class="p-4 text-right">${s.toLocaleString(undefined, {maximumFractionDigits:0})}</td>
-                        <td class="p-4 text-right text-emerald-600">+${yearlyDivCollected.toLocaleString(undefined, {minimumFractionDigits:2})}</td>
-                        <td class="p-4 text-right font-bold">${portfolioVal.toLocaleString(undefined, {maximumFractionDigits:2})}</td>
-                    </tr>`;
-                    labels.push(y + 'Y');
-                    dataPoints.push(portfolioVal.toFixed(2));
+                    
+                    // แสดงตารางแบบรายงวด (ปี หรือ เดือน ตามโหมด)
+                    if (freq === 1 || m % 12 === 0 || m === totalMonths) {
+                        let labelText = (freq === 1) ? `M${m}` : `Y${Math.ceil(m/12)}`;
+                        tableBody.innerHTML += `<tr>
+                            <td class="p-4 font-bold text-indigo-600">${labelText}</td>
+                            <td class="p-4 text-right">${s.toLocaleString(undefined, {maximumFractionDigits:0})}</td>
+                            <td class="p-4 text-right text-emerald-600">${divThisMonth > 0 ? '+' + divThisMonth.toLocaleString(undefined, {minimumFractionDigits:2}) : '-'}</td>
+                            <td class="p-4 text-right font-bold">${portfolioVal.toLocaleString(undefined, {maximumFractionDigits:2})}</td>
+                        </tr>`;
+                        labels.push(labelText);
+                        dataPoints.push(portfolioVal.toFixed(2));
+                    }
                 }
                 finalBalance = (s * stockPriceMain) + accCashMain;
                 totalProfit = finalBalance - totalInvestedMain;
@@ -247,7 +258,6 @@
         function updateChart(labels, data, symbol) { const ctx = document.getElementById('mainChart').getContext('2d'); if(chart) chart.destroy(); chart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ data, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)', borderWidth: 3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } }); }
         function sendRequest() { const msg = document.getElementById('requestInput').value; if(!msg) return alert(i18n[currentLang].reqAlert); window.location.href = `mailto:nick.wl@example.com?subject=FeatureRequest&body=${msg}`; }
         
-        // Initial setup
         changeLang('th');
     </script>
 </body>
