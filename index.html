@@ -34,9 +34,7 @@
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-main-cur">💰 สกุลเงินหลัก (Target Currency)</label>
                     <select id="mainCurrency" class="w-full p-4 bg-gray-50 border-2 border-indigo-100 rounded-2xl outline-none focus:border-indigo-500">
-                        <option value="THB">THB (฿)</option>
-                        <option value="USD">USD ($)</option>
-                        <option value="EUR">EUR (€)</option>
+                        <option value="THB">THB (฿)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option>
                     </select>
                 </div>
                 <div id="box-principal" class="space-y-2">
@@ -46,14 +44,8 @@
             </div>
 
             <div id="input-compound" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="space-y-2">
-                    <label class="font-semibold text-gray-600" id="t-rate">📈 กำไร (%) ต่อรอบ</label>
-                    <input type="number" id="rate" value="5" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl">
-                </div>
-                <div class="space-y-2">
-                    <label class="font-semibold text-gray-600" id="t-duration">⏳ จำนวนรอบทั้งหมด</label>
-                    <input type="number" id="duration" value="12" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl">
-                </div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-rate">📈 กำไร (%) ต่อรอบ</label><input type="number" id="rate" value="5" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-duration">⏳ จำนวนรอบทั้งหมด</label><input type="number" id="duration" value="12" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
             </div>
 
             <div id="input-trading" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -83,8 +75,7 @@
                 <div class="space-y-2 lg:col-span-3">
                     <label class="font-semibold text-gray-600" id="t-reinvest">🔄 รูปแบบปันผล</label>
                     <select id="divReinvest" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700">
-                        <option value="cash" id="opt-cash">รับเงินสด (Cash Out)</option>
-                        <option value="reinvest" id="opt-reinvest">ลงทุนเพิ่ม (Reinvest)</option>
+                        <option value="cash" id="opt-cash">รับเงินสด (Cash Out)</option><option value="reinvest" id="opt-reinvest">ลงทุนเพิ่ม (Reinvest)</option>
                     </select>
                 </div>
             </div>
@@ -105,10 +96,9 @@
                         <h2 class="text-3xl md:text-4xl font-bold text-emerald-700"><span id="resProfit">0</span> <span class="mainSign"></span></h2>
                     </div>
                 </div>
-                
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                     <div class="bg-white p-6 border rounded-3xl h-[400px] shadow-sm"><canvas id="mainChart"></canvas></div>
-                    <div class="bg-white border rounded-3xl overflow-hidden flex flex-col shadow-sm">
+                    <div class="bg-white border rounded-3xl overflow-hidden shadow-sm">
                         <div class="font-bold p-5 border-b bg-gray-50" id="t-table-label">รายละเอียดรายงวด</div>
                         <div class="overflow-y-auto max-h-[320px]">
                             <table class="w-full text-left text-sm">
@@ -122,16 +112,24 @@
                 </div>
             </div>
 
-            <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 text-center">
-                <h3 class="font-bold text-indigo-900 text-xl mb-1" id="t-footer">👨‍💻 จัดทำโดย</h3>
-                <p class="text-indigo-700 font-bold text-2xl tracking-wide">nick.wl</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
+                <div class="bg-indigo-50 p-8 rounded-3xl border border-indigo-100 flex flex-col items-center justify-center text-center">
+                    <h3 class="font-bold text-indigo-900 text-xl mb-1" id="t-footer">👨‍💻 จัดทำโดย</h3>
+                    <p class="text-indigo-700 font-bold text-2xl tracking-wide">nick.wl</p>
+                </div>
+                <div class="bg-slate-50 p-8 rounded-3xl border-2 border-dashed border-gray-200">
+                    <h3 class="text-lg font-bold text-slate-800 mb-2" id="t-req-title">💡 อยากให้เพิ่มเติมอะไร?</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="requestInput" placeholder="..." class="w-full p-4 border-2 border-white rounded-2xl outline-none focus:border-indigo-500 shadow-sm text-sm">
+                        <button onclick="sendRequest()" class="bg-slate-800 hover:bg-black text-white px-6 py-4 rounded-2xl font-bold transition-all text-sm" id="t-req-btn">ส่ง</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         let currentMode = 'compound'; let chart = null; let currentLang = 'th';
-
         const i18n = {
             th: {
                 title: "🚀 เครื่องมือคำนวณการเงินและการเทรด", modeC: "ดอกเบี้ยทบต้น", modeT: "จำลองการเทรด", modeD: "หุ้นปันผล",
@@ -139,7 +137,8 @@
                 winrate: "🎯 Win Rate (%)", tp: "✅ TP (Pts/$)", sl: "❌ SL (Pts/$)", lot: "📦 Lot Size", trades: "🔄 จำนวนไม้เทรด",
                 shares: "📜 หุ้นเริ่มต้น (Shares)", stkPrice: "🏷️ ราคาหุ้นปัจจุบัน", divPS: "💰 ปันผลต่อหุ้น", dca: "💸 ซื้อเพิ่มต่อเดือน (DCA)", tax: "🧾 ภาษีปันผล (%)", years: "⏳ จำนวนปีที่ถือ", reinvest: "🔄 รูปแบบปันผล",
                 optCash: "รับเงินสด (Cash Out)", optReinvest: "ลงทุนเพิ่ม (Reinvest)", btnCalc: "คำนวณผลลัพธ์", resTotal: "Balance สุทธิ", resProfit: "กำไรทั้งหมด",
-                tableLabel: "รายละเอียดรายงวด", colId: "#", colStart: "เริ่ม", colGain: "กำไร", colEnd: "ยอดรวม", footer: "👨‍💻 จัดทำโดย"
+                tableLabel: "รายละเอียดรายงวด", colId: "#", colStart: "เริ่ม", colGain: "กำไร", colEnd: "ยอดรวม", footer: "👨‍💻 จัดทำโดย",
+                reqTitle: "💡 อยากให้เพิ่มเติมอะไร?", reqBtn: "ส่ง", reqAlert: "กรุณากรอกข้อความก่อนส่ง"
             },
             en: {
                 title: "🚀 Finance & Trading Simulator", modeC: "Compound", modeT: "Trading", modeD: "Dividend",
@@ -147,46 +146,21 @@
                 winrate: "🎯 Win Rate (%)", tp: "✅ TP (Pts/$)", sl: "❌ SL (Pts/$)", lot: "📦 Lot Size", trades: "🔄 Total Trades",
                 shares: "📜 Initial Shares", stkPrice: "🏷️ Stock Price", divPS: "💰 Dividend/Share", dca: "💸 Monthly DCA", tax: "🧾 Tax (%)", years: "⏳ Years Held", reinvest: "🔄 Dividend Strategy",
                 optCash: "Cash Out", optReinvest: "Reinvest", btnCalc: "Calculate Results", resTotal: "Net Balance", resProfit: "Total Profit",
-                tableLabel: "Detailed Report", colId: "No.", colStart: "Start", colGain: "Gain", colEnd: "Balance", footer: "👨‍💻 Created by"
+                tableLabel: "Detailed Report", colId: "No.", colStart: "Start", colGain: "Gain", colEnd: "Balance", footer: "👨‍💻 Created by",
+                reqTitle: "💡 Suggestions?", reqBtn: "Send", reqAlert: "Please enter your suggestion"
             }
         };
 
         function changeLang(lang) {
             currentLang = lang; const c = i18n[lang];
-            document.getElementById('t-title').innerText = c.title;
-            document.getElementById('btn-compound').innerText = c.modeC;
-            document.getElementById('btn-trading').innerText = c.modeT;
-            document.getElementById('btn-dividend').innerText = c.modeD;
-            document.getElementById('t-main-cur').innerText = c.mainCur;
-            document.getElementById('t-principal').innerText = c.principal;
-            document.getElementById('t-rate').innerText = c.rate;
-            document.getElementById('t-duration').innerText = c.duration;
-            document.getElementById('t-winrate').innerText = c.winrate;
-            document.getElementById('t-tp').innerText = c.tp;
-            document.getElementById('t-sl').innerText = c.sl;
-            document.getElementById('t-lot').innerText = c.lot;
-            document.getElementById('t-trades').innerText = c.trades;
-            document.getElementById('t-shares').innerText = c.shares;
-            document.getElementById('t-stk-price').innerText = c.stkPrice;
-            document.getElementById('t-div-ps').innerText = c.divPS;
-            document.getElementById('t-dca').innerText = c.dca;
-            document.getElementById('t-tax').innerText = c.tax;
-            document.getElementById('t-years').innerText = c.years;
-            document.getElementById('t-reinvest').innerText = c.reinvest;
-            document.getElementById('opt-cash').innerText = c.optCash;
-            document.getElementById('opt-reinvest').innerText = c.optReinvest;
-            document.getElementById('t-btn-calc').innerText = c.btnCalc;
-            document.getElementById('t-res-total').innerText = c.resTotal;
-            document.getElementById('t-res-profit').innerText = c.resProfit;
-            document.getElementById('t-table-label').innerText = c.tableLabel;
-            document.getElementById('t-col-id').innerText = c.colId;
-            document.getElementById('t-col-start').innerText = c.colStart;
-            document.getElementById('t-col-gain').innerText = c.colGain;
-            document.getElementById('t-col-end').innerText = c.colEnd;
-            document.getElementById('t-footer').innerText = c.footer;
-
+            Object.keys(c).forEach(key => { const el = document.getElementById('t-'+key.replace(/([A-Z])/g, "-$1").toLowerCase()); if(el) el.innerText = c[key]; });
+            document.getElementById('requestInput').placeholder = lang === 'th' ? "แนะนำฟีเจอร์..." : "Suggest a feature...";
             document.getElementById('lang-th').className = lang === 'th' ? 'py-2 px-6 rounded-xl font-bold bg-indigo-600 text-white shadow-lg' : 'py-2 px-6 rounded-xl font-bold text-slate-400';
             document.getElementById('lang-en').className = lang === 'en' ? 'py-2 px-6 rounded-xl font-bold bg-indigo-600 text-white shadow-lg' : 'py-2 px-6 rounded-xl font-bold text-slate-400';
+            // Specific ID mapping for those not following the pattern
+            document.getElementById('t-btn-calc').innerText = c.btnCalc;
+            document.getElementById('opt-cash').innerText = c.optCash;
+            document.getElementById('opt-reinvest').innerText = c.optReinvest;
         }
 
         function switchMode(mode) {
@@ -195,129 +169,43 @@
             document.getElementById('input-trading').classList.toggle('hidden', mode !== 'trading');
             document.getElementById('input-dividend').classList.toggle('hidden', mode !== 'dividend');
             document.getElementById('box-principal').classList.toggle('hidden', mode === 'dividend');
-            
-            ['compound', 'trading', 'dividend'].forEach(m => {
-                const btn = document.getElementById('btn-' + m);
-                btn.className = mode === m ? "whitespace-nowrap py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "whitespace-nowrap py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
-            });
+            ['compound', 'trading', 'dividend'].forEach(m => { const btn = document.getElementById('btn-' + m); btn.className = mode === m ? "whitespace-nowrap py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "whitespace-nowrap py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white"; });
         }
 
-        async function getRates(base) {
-            try {
-                const res = await fetch(`https://open.er-api.com/v6/latest/${base}`);
-                const data = await res.json();
-                return data.rates;
-            } catch (e) {
-                return { "THB": 1, "USD": 0.028, "EUR": 0.026 };
-            }
-        }
+        async function getRates(base) { try { const res = await fetch(`https://open.er-api.com/v6/latest/${base}`); const data = await res.json(); return data.rates; } catch (e) { return { "THB": 1, "USD": 0.028, "EUR": 0.026 }; } }
 
         async function processCalculation() {
-            const btn = document.getElementById('calcBtn');
-            btn.innerText = currentLang === 'th' ? "กำลังประมวลผล..." : "Processing...";
-            btn.disabled = true;
-
-            const mainCur = document.getElementById('mainCurrency').value;
-            const rates = await getRates(mainCur);
-            const toMain = (val, fromCur) => val / rates[fromCur];
-
-            document.getElementById('results').classList.remove('hidden');
-            document.querySelectorAll('.mainSign').forEach(el => el.innerText = mainCur);
+            const btn = document.getElementById('calcBtn'); btn.innerText = currentLang === 'th' ? "กำลังประมวลผล..." : "Processing..."; btn.disabled = true;
+            const mainCur = document.getElementById('mainCurrency').value; const rates = await getRates(mainCur); const toMain = (val, fromCur) => val / rates[fromCur];
+            document.getElementById('results').classList.remove('hidden'); document.querySelectorAll('.mainSign').forEach(el => el.innerText = mainCur);
             const tableBody = document.getElementById('resTable'); tableBody.innerHTML = '';
-            
             let labels = ['0'], dataPoints = [], finalBalance = 0, totalProfit = 0;
 
             if (currentMode === 'compound') {
-                let p = parseFloat(document.getElementById('principal').value);
-                let r = parseFloat(document.getElementById('rate').value)/100;
-                let d = parseInt(document.getElementById('duration').value);
+                let p = parseFloat(document.getElementById('principal').value); let r = parseFloat(document.getElementById('rate').value)/100; let d = parseInt(document.getElementById('duration').value);
                 finalBalance = p; dataPoints.push(p);
-                for(let i=1; i<=d; i++) {
-                    let start = finalBalance; let gain = finalBalance * r; finalBalance += gain;
-                    tableBody.innerHTML += `<tr><td class="p-4">${i}</td><td class="p-4 text-right">${start.toLocaleString()}</td><td class="p-4 text-right text-green-600">+${gain.toLocaleString()}</td><td class="p-4 text-right font-bold">${finalBalance.toLocaleString()}</td></tr>`;
-                    labels.push(i); dataPoints.push(finalBalance.toFixed(2));
-                }
+                for(let i=1; i<=d; i++) { let start = finalBalance; let gain = finalBalance * r; finalBalance += gain; tableBody.innerHTML += `<tr><td class="p-4">${i}</td><td class="p-4 text-right">${start.toLocaleString()}</td><td class="p-4 text-right text-green-600">+${gain.toLocaleString()}</td><td class="p-4 text-right font-bold">${finalBalance.toLocaleString()}</td></tr>`; labels.push(i); dataPoints.push(finalBalance.toFixed(2)); }
                 totalProfit = finalBalance - p;
-            } 
-            else if (currentMode === 'trading') {
-                let p = parseFloat(document.getElementById('principal').value);
-                let winR = parseFloat(document.getElementById('winRate').value)/100;
-                let tp = parseFloat(document.getElementById('tpPoints').value);
-                let sl = parseFloat(document.getElementById('slPoints').value);
-                let lot = parseFloat(document.getElementById('lotValue').value);
-                let t = parseInt(document.getElementById('totalTrades').value);
+            } else if (currentMode === 'trading') {
+                let p = parseFloat(document.getElementById('principal').value); let winR = parseFloat(document.getElementById('winRate').value)/100; let tp = parseFloat(document.getElementById('tpPoints').value); let sl = parseFloat(document.getElementById('slPoints').value); let lot = parseFloat(document.getElementById('lotValue').value); let t = parseInt(document.getElementById('totalTrades').value);
                 finalBalance = p; dataPoints.push(p);
-                for(let i=1; i<=t; i++) {
-                    let start = finalBalance; let win = Math.random() < winR;
-                    let change = win ? (tp * lot) : -(sl * lot); finalBalance += change;
-                    let status = win ? '<span class="text-green-600 font-bold">WIN</span>' : '<span class="text-red-600 font-bold">LOSS</span>';
-                    tableBody.innerHTML += `<tr><td class="p-4">${i} ${status}</td><td class="p-4 text-right">${start.toLocaleString()}</td><td class="p-4 text-right ${change>0?'text-green-600':'text-red-600'}">${change.toLocaleString()}</td><td class="p-4 text-right font-bold">${finalBalance.toLocaleString()}</td></tr>`;
-                    labels.push(i); dataPoints.push(finalBalance.toFixed(2));
-                }
+                for(let i=1; i<=t; i++) { let start = finalBalance; let win = Math.random() < winR; let change = win ? (tp * lot) : -(sl * lot); finalBalance += change; let status = win ? '<span class="text-green-600 font-bold">WIN</span>' : '<span class="text-red-600 font-bold">LOSS</span>'; tableBody.innerHTML += `<tr><td class="p-4">${i} ${status}</td><td class="p-4 text-right">${start.toLocaleString()}</td><td class="p-4 text-right ${change>0?'text-green-600':'text-red-600'}">${change.toLocaleString()}</td><td class="p-4 text-right font-bold">${finalBalance.toLocaleString()}</td></tr>`; labels.push(i); dataPoints.push(finalBalance.toFixed(2)); }
                 totalProfit = finalBalance - p;
-            } 
-            else if (currentMode === 'dividend') {
-                let s = parseFloat(document.getElementById('shares').value);
-                let pStock = parseFloat(document.getElementById('stockPrice').value);
-                let pCur = document.getElementById('priceCur').value;
-                let dShare = parseFloat(document.getElementById('divPerShare').value);
-                let dCur = document.getElementById('divCur').value;
-                let mBuy = parseFloat(document.getElementById('monthlyBuy').value);
-                let mCur = document.getElementById('dcaCur').value;
-                let tax = parseFloat(document.getElementById('divTax').value)/100;
-                let years = parseInt(document.getElementById('divYears').value);
-                let mode = document.getElementById('divReinvest').value;
-
-                let stockPriceMain = toMain(pStock, pCur);
-                let divMain = toMain(dShare, dCur);
-                let dcaMain = toMain(mBuy, mCur);
-                
-                let initialInvestMain = s * stockPriceMain;
-                let totalInvestedMain = initialInvestMain;
-                let accCashMain = 0;
+            } else if (currentMode === 'dividend') {
+                let s = parseFloat(document.getElementById('shares').value); let pStock = parseFloat(document.getElementById('stockPrice').value); let pCur = document.getElementById('priceCur').value; let dShare = parseFloat(document.getElementById('divPerShare').value); let dCur = document.getElementById('divCur').value; let mBuy = parseFloat(document.getElementById('monthlyBuy').value); let mCur = document.getElementById('dcaCur').value; let tax = parseFloat(document.getElementById('divTax').value)/100; let years = parseInt(document.getElementById('divYears').value); let mode = document.getElementById('divReinvest').value;
+                let stockPriceMain = toMain(pStock, pCur); let divMain = toMain(dShare, dCur); let dcaMain = toMain(mBuy, mCur); let initialInvestMain = s * stockPriceMain; let totalInvestedMain = initialInvestMain; let accCashMain = 0;
                 finalBalance = initialInvestMain; dataPoints.push(initialInvestMain);
-
-                for(let i=1; i<=years; i++) {
-                    let startVal = finalBalance;
-                    // DCA Monthly
-                    let yearlyDCA = dcaMain * 12;
-                    s += yearlyDCA / stockPriceMain;
-                    totalInvestedMain += yearlyDCA;
-
-                    // Yearly Dividend
-                    let yearlyDiv = (s * divMain) * (1 - tax);
-                    if(mode === 'reinvest') { s += yearlyDiv / stockPriceMain; }
-                    else { accCashMain += yearlyDiv; }
-                    
-                    finalBalance = s * stockPriceMain;
-                    let rowBalance = finalBalance + (mode === 'cash' ? accCashMain : 0);
-                    
-                    tableBody.innerHTML += `<tr><td class="p-4">${i} (Y)</td><td class="p-4 text-right">${startVal.toLocaleString()}</td><td class="p-4 text-right text-emerald-600">+${yearlyDiv.toLocaleString()}</td><td class="p-4 text-right font-bold">${rowBalance.toLocaleString()}</td></tr>`;
-                    labels.push(i + 'Y'); dataPoints.push(rowBalance.toFixed(2));
-                }
-                if(mode === 'cash') finalBalance += accCashMain;
-                totalProfit = finalBalance - totalInvestedMain;
-                
-                document.getElementById('exchangeRemark').innerText = `Remark: 1 ${mainCur} = ${rates['THB'].toFixed(2)} THB | ${rates['USD'].toFixed(4)} USD | ${rates['EUR'].toFixed(4)} EUR (Updated)`;
+                for(let i=1; i<=years; i++) { let startVal = finalBalance; let yearlyDCA = dcaMain * 12; s += yearlyDCA / stockPriceMain; totalInvestedMain += yearlyDCA; let yearlyDiv = (s * divMain) * (1 - tax); if(mode === 'reinvest') { s += yearlyDiv / stockPriceMain; } else { accCashMain += yearlyDiv; } finalBalance = s * stockPriceMain; let rowBalance = finalBalance + (mode === 'cash' ? accCashMain : 0); tableBody.innerHTML += `<tr><td class="p-4">${i} (Y)</td><td class="p-4 text-right">${startVal.toLocaleString()}</td><td class="p-4 text-right text-emerald-600">+${yearlyDiv.toLocaleString()}</td><td class="p-4 text-right font-bold">${rowBalance.toLocaleString()}</td></tr>`; labels.push(i + 'Y'); dataPoints.push(rowBalance.toFixed(2)); }
+                if(mode === 'cash') finalBalance += accCashMain; totalProfit = finalBalance - totalInvestedMain;
+                document.getElementById('exchangeRemark').innerText = `Remark: 1 ${mainCur} = ${rates['THB'].toFixed(2)} THB | ${rates['USD'].toFixed(4)} USD | ${rates['EUR'].toFixed(4)} EUR`;
             }
-
-            document.getElementById('resTotal').innerText = finalBalance.toLocaleString(undefined, {maximumFractionDigits:2});
-            document.getElementById('resProfit').innerText = totalProfit.toLocaleString(undefined, {maximumFractionDigits:2});
-            updateChart(labels, dataPoints, mainCur);
-            
-            btn.innerText = currentLang === 'th' ? "คำนวณผลลัพธ์" : "Calculate Results";
-            btn.disabled = false;
+            document.getElementById('resTotal').innerText = finalBalance.toLocaleString(undefined, {maximumFractionDigits:2}); document.getElementById('resProfit').innerText = totalProfit.toLocaleString(undefined, {maximumFractionDigits:2});
+            updateChart(labels, dataPoints, mainCur); btn.innerText = currentLang === 'th' ? "คำนวณผลลัพธ์" : "Calculate Results"; btn.disabled = false;
         }
 
-        function updateChart(labels, data, symbol) {
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            if(chart) chart.destroy();
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: { labels, datasets: [{ data, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)', borderWidth: 3 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-            });
-        }
+        function updateChart(labels, data, symbol) { const ctx = document.getElementById('mainChart').getContext('2d'); if(chart) chart.destroy(); chart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ data, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)', borderWidth: 3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } }); }
+        
+        function sendRequest() { const msg = document.getElementById('requestInput').value; if(!msg) return alert(i18n[currentLang].reqAlert); window.location.href = `mailto:nick.wl@example.com?subject=FeatureRequest&body=${msg}`; }
     </script>
 </body>
 </html>
