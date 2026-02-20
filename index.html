@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance & Trading Simulator</title>
+    <title>Advanced Finance & Trading Simulator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -12,13 +12,13 @@
 <body class="bg-slate-50 min-h-screen p-4 md:p-8">
     <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
         
-        <div class="bg-indigo-900 p-8 text-white text-center">
-            <h1 class="text-3xl font-bold mb-4">📈 Multi-Finance Tool</h1>
-            <div class="flex justify-center gap-2 bg-indigo-950/50 p-1 rounded-2xl max-w-md mx-auto">
+        <div class="bg-slate-900 p-8 text-white text-center">
+            <h1 class="text-3xl font-bold mb-4">🚀 Advanced Multi-Finance Tool</h1>
+            <div class="flex justify-center gap-2 bg-slate-800 p-1 rounded-2xl max-w-md mx-auto">
                 <button onclick="switchMode('compound')" id="btn-compound" class="flex-1 py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white">
                     ดอกเบี้ยทบต้น
                 </button>
-                <button onclick="switchMode('trading')" id="btn-trading" class="flex-1 py-2 px-4 rounded-xl font-semibold transition text-indigo-300 hover:text-white">
+                <button onclick="switchMode('trading')" id="btn-trading" class="flex-1 py-2 px-4 rounded-xl font-semibold transition text-slate-400 hover:text-white">
                     จำลองการเทรด
                 </button>
             </div>
@@ -44,7 +44,7 @@
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-700">📈 กำไร (%) ต่อรอบ</label>
                     <div class="flex">
-                        <input type="number" id="rate" value="5" class="w-full p-4 bg-gray-50 border rounded-l-2xl outline-none focus:ring-2 focus:ring-indigo-500">
+                        <input type="number" id="rate" value="5" class="w-full p-4 bg-gray-50 border rounded-l-2xl outline-none">
                         <select id="ratePeriod" class="p-4 bg-indigo-50 border border-l-0 rounded-r-2xl outline-none text-indigo-700 font-bold">
                             <option value="วัน">ต่อวัน</option>
                             <option value="เดือน">ต่อเดือน</option>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-700">⏳ จำนวนรอบทั้งหมด</label>
-                    <input type="number" id="duration" value="12" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:ring-2 focus:ring-indigo-500">
+                    <input type="number" id="duration" value="12" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
                 </div>
             </div>
 
@@ -72,18 +72,19 @@
                     <input type="number" id="slPoints" value="250" class="w-full p-4 bg-red-50 border border-red-100 rounded-2xl outline-none">
                 </div>
                 <div class="space-y-2">
-                    <label class="font-semibold text-gray-700">📦 จำนวน Lot</label>
-                    <input type="number" id="lotSize" value="0.1" step="0.01" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
+                    <label class="font-semibold text-gray-700">⚙️ การคำนวณ Lot</label>
+                    <select id="lotType" onchange="toggleLotInput()" class="w-full p-4 bg-indigo-50 border rounded-2xl outline-none font-bold text-indigo-700">
+                        <option value="fixed">Fixed Lot (ระบุค่าเอง)</option>
+                        <option value="percent">Risk % of Capital (ตามเงินต้น)</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label id="lotLabel" class="font-semibold text-gray-700">📦 จำนวน Lot</label>
+                    <input type="number" id="lotValue" value="0.1" step="0.01" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
                 </div>
                 <div class="space-y-2">
                     <label class="font-semibold text-gray-700">🔄 จำนวนไม้ที่เทรด</label>
                     <input type="number" id="totalTrades" value="20" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none">
-                </div>
-                <div class="flex items-end">
-                    <div class="w-full p-4 bg-amber-50 rounded-2xl text-center border border-amber-100">
-                        <span class="text-xs font-bold text-amber-600 block uppercase">RR Ratio</span>
-                        <span id="rrDisplay" class="text-xl font-bold text-amber-800">1:2</span>
-                    </div>
                 </div>
             </div>
 
@@ -91,14 +92,14 @@
                 คำนวณผลลัพธ์
             </button>
 
-            <div id="results" class="hidden animate-in fade-in duration-500">
+            <div id="results" class="hidden animate-in fade-in">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
                     <div class="bg-indigo-50 p-6 rounded-3xl border border-indigo-100 text-center">
-                        <p class="text-indigo-600 text-sm font-bold uppercase mb-1">เงินรวมสุทธิ</p>
+                        <p class="text-indigo-600 text-xs font-bold uppercase mb-1">Balance สุทธิ</p>
                         <h2 class="text-4xl font-bold text-indigo-900"><span class="curSign"></span> <span id="resTotal">0</span></h2>
                     </div>
                     <div class="bg-emerald-50 p-6 rounded-3xl border border-emerald-100 text-center">
-                        <p class="text-emerald-600 text-sm font-bold uppercase mb-1">กำไรทั้งหมด</p>
+                        <p class="text-emerald-600 text-xs font-bold uppercase mb-1">กำไร/ขาดทุนรวม</p>
                         <h2 class="text-4xl font-bold text-emerald-700"><span class="curSign"></span> <span id="resProfit">0</span></h2>
                     </div>
                 </div>
@@ -108,15 +109,16 @@
                         <canvas id="mainChart"></canvas>
                     </div>
                     <div class="bg-white border rounded-3xl shadow-sm overflow-hidden flex flex-col">
-                        <div id="tableHeaderLabel" class="font-bold text-gray-800 p-4 border-b bg-gray-50">รายละเอียด</div>
+                        <div id="tableHeaderLabel" class="font-bold text-gray-800 p-4 border-b bg-gray-100">รายละเอียดรายงวด</div>
                         <div class="overflow-y-auto max-h-[320px]">
                             <table class="w-full text-left border-collapse">
-                                <thead class="bg-white sticky top-0 shadow-sm text-xs font-bold text-gray-500">
+                                <thead class="bg-white sticky top-0 shadow-sm text-[10px] font-bold text-gray-400 uppercase">
                                     <tr>
                                         <th class="p-4">ลำดับ</th>
+                                        <th class="p-4 text-right">เงินต้นเริ่มต้น</th>
                                         <th id="colStatus" class="p-4 hidden text-center">สถานะ</th>
-                                        <th class="p-4 text-right">กำไร</th>
-                                        <th class="p-4 text-right">Balance</th>
+                                        <th class="p-4 text-right">กำไร/ขาดทุน</th>
+                                        <th class="p-4 text-right text-gray-800">เงินรวม</th>
                                     </tr>
                                 </thead>
                                 <tbody id="resTable" class="divide-y text-sm"></tbody>
@@ -136,17 +138,22 @@
             currentMode = mode;
             document.getElementById('input-compound').classList.toggle('hidden', mode !== 'compound');
             document.getElementById('input-trading').classList.toggle('hidden', mode !== 'trading');
-            
-            // UI Button styling
-            const btnC = document.getElementById('btn-compound');
-            const btnT = document.getElementById('btn-trading');
-            
-            if(mode === 'compound') {
-                btnC.className = "flex-1 py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-md";
-                btnT.className = "flex-1 py-2 px-4 rounded-xl font-semibold text-indigo-300 hover:text-white";
+            const bC = document.getElementById('btn-compound');
+            const bT = document.getElementById('btn-trading');
+            bC.className = mode === 'compound' ? "flex-1 py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-md" : "flex-1 py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
+            bT.className = mode === 'trading' ? "flex-1 py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-md" : "flex-1 py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white";
+        }
+
+        function toggleLotInput() {
+            const type = document.getElementById('lotType').value;
+            const label = document.getElementById('lotLabel');
+            const input = document.getElementById('lotValue');
+            if (type === 'fixed') {
+                label.innerText = "📦 จำนวน Lot";
+                input.value = "0.1";
             } else {
-                btnT.className = "flex-1 py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-md";
-                btnC.className = "flex-1 py-2 px-4 rounded-xl font-semibold text-indigo-300 hover:text-white";
+                label.innerText = "⚠️ ความเสี่ยงต่อไม้ (%)";
+                input.value = "1";
             }
         }
 
@@ -168,42 +175,45 @@
                 const rate = parseFloat(document.getElementById('rate').value) / 100;
                 const duration = parseInt(document.getElementById('duration').value);
                 document.getElementById('colStatus').classList.add('hidden');
-                document.getElementById('tableHeaderLabel').innerText = "📊 รายละเอียดรายรอบ";
 
                 for(let i=1; i<=duration; i++) {
+                    let startBalance = currentBalance;
                     let interest = currentBalance * rate;
                     currentBalance += interest;
                     tableBody.innerHTML += `<tr>
-                        <td class="p-4 font-medium text-gray-400">${i}</td>
+                        <td class="p-4 text-gray-400">${i}</td>
+                        <td class="p-4 text-right">${startBalance.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
                         <td class="p-4 text-right text-emerald-600 font-bold">+${interest.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
                         <td class="p-4 text-right font-bold text-gray-800">${currentBalance.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
                     </tr>`;
-                    labels.push('รอบที่ ' + i);
+                    labels.push('รอบ ' + i);
                     dataPoints.push(currentBalance.toFixed(2));
                 }
             } else {
                 const winRate = parseFloat(document.getElementById('winRate').value) / 100;
                 const tp = parseFloat(document.getElementById('tpPoints').value);
                 const sl = parseFloat(document.getElementById('slPoints').value);
-                const lot = parseFloat(document.getElementById('lotSize').value);
+                const lotType = document.getElementById('lotType').value;
+                const lotVal = parseFloat(document.getElementById('lotValue').value);
                 const trades = parseInt(document.getElementById('totalTrades').value);
-                
                 document.getElementById('colStatus').classList.remove('hidden');
-                document.getElementById('tableHeaderLabel').innerText = "📝 บันทึกการเทรด";
-                document.getElementById('rrDisplay').innerText = `1:${(tp/sl).toFixed(1)}`;
 
                 for(let i=1; i<=trades; i++) {
+                    let startBalance = currentBalance;
+                    let calculatedLot = (lotType === 'fixed') ? lotVal : (currentBalance * (lotVal/100)) / sl;
+                    
                     const win = Math.random() < winRate;
-                    const change = win ? (tp * lot) : -(sl * lot);
+                    const change = win ? (tp * calculatedLot) : -(sl * calculatedLot);
                     currentBalance += change;
 
                     tableBody.innerHTML += `<tr>
                         <td class="p-4 text-gray-400">${i}</td>
+                        <td class="p-4 text-right">${startBalance.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
                         <td class="p-4 text-center"><span class="px-2 py-1 rounded-lg text-[10px] font-bold ${win?'text-green-600 bg-green-50':'text-red-600 bg-red-50'}">${win?'WIN':'LOSS'}</span></td>
-                        <td class="p-4 text-right font-bold ${change>0?'text-green-600':'text-red-600'}">${change.toLocaleString()}</td>
-                        <td class="p-4 text-right font-bold">${currentBalance.toLocaleString()}</td>
+                        <td class="p-4 text-right font-bold ${change>0?'text-green-600':'text-red-600'}">${change.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
+                        <td class="p-4 text-right font-bold">${currentBalance.toLocaleString(undefined,{minimumFractionDigits:2})}</td>
                     </tr>`;
-                    labels.push('ไม้ที่ ' + i);
+                    labels.push('ไม้ ' + i);
                     dataPoints.push(currentBalance.toFixed(2));
                 }
             }
@@ -221,7 +231,7 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'พอร์ตโฟลิโอ',
+                        label: 'Portfolio Value',
                         data: data,
                         borderColor: '#4f46e5',
                         backgroundColor: 'rgba(79, 70, 229, 0.1)',
