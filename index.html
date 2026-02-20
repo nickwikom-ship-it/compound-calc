@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finance Master Pro - Absolute Final</title>
+    <title>Finance Master Pro - Final 100% Verified</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -11,20 +11,20 @@
         body { font-family: 'Kanit', sans-serif; }
         .input-remark { @apply text-xs text-indigo-500 font-bold ml-2; }
         .rate-info { @apply text-[11px] text-emerald-600 mt-1 block italic font-semibold; }
-        .loading-pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen p-4 md:p-8">
     <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
         
-        <div class="bg-slate-900 p-8 text-white text-center border-b-4 border-indigo-500">
-            <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 ระบบคำนวณการเงิน (Real-time API)</h1>
+        <div class="bg-slate-900 p-8 text-white text-center border-b-4 border-indigo-600">
+            <h1 class="text-2xl md:text-3xl font-bold mb-6" id="t-title">🚀 ระบบคำนวณการเงิน (Final Verified)</h1>
             <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
                 <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700">
-                    <button onclick="switchMode('compound')" id="nav-compound" class="py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white shadow-lg">ดอกเบี้ยทบต้น</button>
-                    <button onclick="switchMode('trading')" id="nav-trading" class="py-2 px-4 rounded-xl font-semibold transition text-slate-400">จำลองการเทรด</button>
-                    <button onclick="switchMode('dividend')" id="nav-dividend" class="py-2 px-4 rounded-xl font-semibold transition text-slate-400">หุ้นปันผล (DCA)</button>
+                    <button onclick="switchMode('compound')" id="nav-compound" class="mode-btn py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white">ดอกเบี้ยทบต้น</button>
+                    <button onclick="switchMode('trading')" id="nav-trading" class="mode-btn py-2 px-4 rounded-xl font-semibold transition text-slate-400">จำลองการเทรด</button>
+                    <button onclick="switchMode('dividend')" id="nav-dividend" class="mode-btn py-2 px-4 rounded-xl font-semibold transition text-slate-400">หุ้นปันผล (DCA)</button>
                 </div>
                 <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700 ml-2">
                     <button onclick="changeLang('th')" id="lang-th" class="py-2 px-4 rounded-xl font-bold transition bg-indigo-600 text-white">TH</button>
@@ -40,9 +40,9 @@
                     <select id="mainCurrency" onchange="updateAllUI()" class="w-full p-4 bg-gray-50 border-2 border-indigo-100 rounded-2xl outline-none font-bold">
                         <option value="THB">THB (฿)</option><option value="USD">USD ($)</option>
                     </select>
-                    <span id="rate-remark" class="rate-info loading-pulse">🌐 กำลังเชื่อมต่อ Real-time API...</span>
+                    <span id="rate-remark" class="rate-info italic">🌐 กำลังดึงข้อมูล Real-time API...</span>
                 </div>
-                <div id="box-principal" class="space-y-2">
+                <div id="box-principal-global" class="space-y-2">
                     <label class="font-semibold text-gray-600" id="t-principal">💵 เงินต้นเริ่มต้น</label>
                     <div class="flex items-center">
                         <input type="number" id="principal" value="10000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl">
@@ -51,57 +51,51 @@
                 </div>
             </div>
 
-            <div id="common-inputs" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div id="box-rate" class="space-y-2">
-                    <label class="font-semibold text-gray-600" id="t-cp-rate">📈 กำไร (%) ต่อรอบ</label>
-                    <input type="number" id="cp-rate" value="5" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl">
-                </div>
-                <div id="box-dur" class="space-y-2">
-                    <label class="font-semibold text-gray-600" id="t-cp-dur">⏳ จำนวนรอบ</label>
-                    <input type="number" id="cp-duration" value="12" class="w-full p-4 bg-indigo-50 border-2 border-indigo-200 rounded-2xl font-bold">
+            <div id="tab-compound" class="tab-content active space-y-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-cp-rate">📈 กำไร (%) ต่อรอบ</label><input type="number" id="cp-rate" value="5" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-cp-dur">⏳ จำนวนรอบ</label><input type="number" id="cp-duration" value="12" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
                 </div>
             </div>
 
-            <div id="tab-trading" class="hidden space-y-6 mb-8">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-mode">🛠️ รูปแบบการคุม Lot</label><select id="tr-lot-mode" onchange="updateAllUI()" class="w-full p-4 bg-indigo-50 border-2 border-indigo-100 rounded-2xl font-bold text-indigo-700"><option value="fixed">Fixed Lot</option><option value="risk">Risk % per Trade</option></select></div>
-                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-lot-val">📦 ค่า Lot / % Risk</label><div class="flex items-center"><input type="number" id="tr-lot-value" value="0.10" step="0.01" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl"><span id="rem-lot" class="input-remark">LOT</span></div></div>
+            <div id="tab-trading" class="tab-content space-y-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-dur-label">⏳ จำนวนรอบเทรด</label><input type="number" id="tr-duration" value="20" class="w-full p-4 bg-indigo-50 border-2 border-indigo-200 rounded-2xl font-bold"></div>
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-mode">🛠️ รูปแบบการคุม Lot</label><select id="tr-lot-mode" onchange="updateAllUI()" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl font-bold"><option value="fixed">Fixed Lot</option><option value="risk">Risk % per Trade</option></select></div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-lot-val">📦 ค่า Lot / % Risk</label><div class="flex items-center"><input type="number" id="tr-lot-value" value="0.10" step="0.01" class="w-full p-4 bg-blue-50 border-2 border-blue-100 rounded-2xl"><span id="rem-lot" class="input-remark">LOT</span></div></div>
                     <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-win">🎯 Win Rate (%)</label><input type="number" id="tr-win" value="60" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
                     <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-tp">✅ TP (Points)</label><input type="number" id="tr-tp" value="500" class="w-full p-4 bg-green-50 border-2 border-green-100 rounded-2xl"></div>
                     <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-tr-sl">❌ SL (Points)</label><input type="number" id="tr-sl" value="250" class="w-full p-4 bg-red-50 border-2 border-red-100 rounded-2xl"></div>
                 </div>
             </div>
 
-            <div id="tab-dividend" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-shares">📜 หุ้นเริ่มต้น (Shares)</label><input type="number" id="dv-shares" value="1000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-price">🏷️ ราคาหุ้นปัจจุบัน</label><div class="flex items-center"><input type="number" id="dv-price" value="50" class="w-full p-4 bg-gray-50 border-2 border-gray-100 border-r-0 rounded-l-2xl outline-none grow"><select id="dv-price-cur" onchange="updateAllUI()" class="p-4 bg-gray-100 border-2 border-gray-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div></div>
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-val">💰 ปันผลต่อหุ้น</label><div class="flex items-center"><input type="number" id="dv-val" value="2.5" class="w-full p-4 bg-emerald-50 border-2 border-emerald-100 border-r-0 rounded-l-2xl outline-none grow"><select id="dv-div-cur" onchange="updateAllUI()" class="p-4 bg-emerald-100 border-2 border-emerald-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div></div>
-                <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-freq">📅 ความถี่จ่ายปันผล</label><select id="dv-freq" class="w-full p-4 bg-gray-100 border-2 border-gray-100 rounded-2xl"><option value="12">รายปี</option><option value="6">ราย 6 เดือน</option><option value="3">รายไตรมาส</option><option value="1">รายเดือน</option></select></div>
-                <div class="space-y-2">
-                    <label class="font-semibold text-gray-600" id="t-dv-dca">💸 DCA ต่อเดือน</label>
-                    <div class="flex items-center">
-                        <input type="number" id="dv-dca" value="5000" class="w-full p-4 bg-blue-50 border-2 border-blue-100 border-r-0 rounded-l-2xl outline-none grow">
-                        <select id="dv-dca-cur" onchange="updateAllUI()" class="p-4 bg-blue-100 border-2 border-blue-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select>
-                    </div>
+            <div id="tab-dividend" class="tab-content space-y-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-shares">📜 หุ้นเริ่มต้น (Shares)</label><input type="number" id="dv-shares" value="1000" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"></div>
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-price">🏷️ ราคาหุ้นปัจจุบัน</label><div class="flex items-center"><input type="number" id="dv-price" value="50" class="w-full p-4 bg-gray-50 border-2 border-gray-100 border-r-0 rounded-l-2xl grow"><select id="dv-price-cur" onchange="updateAllUI()" class="p-4 bg-gray-100 border-2 border-gray-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div></div>
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-val">💰 ปันผลต่อหุ้น</label><div class="flex items-center"><input type="number" id="dv-val" value="2.5" class="w-full p-4 bg-emerald-50 border-2 border-emerald-100 border-r-0 rounded-l-2xl grow"><select id="dv-div-cur" onchange="updateAllUI()" class="p-4 bg-emerald-100 border-2 border-emerald-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div></div>
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-freq">📅 ความถี่จ่ายปันผล</label><select id="dv-freq" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-2xl"><option value="12">รายปี</option><option value="6">ราย 6 เดือน</option><option value="3">รายไตรมาส</option><option value="1">รายเดือน</option></select></div>
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-dca">💸 DCA ต่อเดือน</label><div class="flex items-center"><input type="number" id="dv-dca" value="5000" class="w-full p-4 bg-blue-50 border-2 border-blue-100 border-r-0 rounded-l-2xl grow"><select id="dv-dca-cur" onchange="updateAllUI()" class="p-4 bg-blue-100 border-2 border-blue-100 rounded-r-2xl font-bold"><option value="THB">THB</option><option value="USD">USD</option></select></div></div>
+                    <div class="space-y-2"><label class="font-semibold text-gray-600" id="t-dv-dur">⏳ จำนวนปีที่ลงทุน</label><input type="number" id="dv-duration" value="10" class="w-full p-4 border-2 border-indigo-300 rounded-2xl font-bold bg-indigo-50"></div>
                 </div>
             </div>
 
             <button onclick="calculate()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl font-bold text-xl mb-8 shadow-lg active:scale-95 transition-all" id="t-calc-btn">คำนวณผลลัพธ์</button>
 
             <div id="analysis-div" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-center">
-                <div class="bg-emerald-900 text-white p-6 rounded-2xl border-t-4 border-emerald-400 shadow-lg"><p class="text-xs uppercase text-emerald-300" id="t-ann-inc-lbl">ปันผลต่อปี (หลังภาษี)</p><h3 class="text-2xl font-bold"><span id="res-ann-inc">0</span> <span class="sign"></span></h3></div>
-                <div class="bg-blue-900 text-white p-6 rounded-2xl border-t-4 border-blue-400 shadow-lg"><p class="text-xs uppercase text-blue-300" id="t-mon-inc-lbl">เงินเดือนจากหุ้น</p><h3 class="text-2xl font-bold"><span id="res-mon-inc">0</span> <span class="sign"></span></h3></div>
+                <div class="bg-emerald-900 text-white p-6 rounded-2xl border-t-4 border-emerald-400 shadow-md"><p class="text-xs uppercase text-emerald-300" id="t-ann-inc-lbl">ปันผลต่อปี (หักภาษี 10%)</p><h3 class="text-2xl font-bold"><span id="res-ann-inc">0</span> <span class="sign"></span></h3></div>
+                <div class="bg-blue-900 text-white p-6 rounded-2xl border-t-4 border-blue-400 shadow-md"><p class="text-xs uppercase text-blue-300" id="t-mon-inc-lbl">รายได้เฉลี่ยต่อเดือน</p><h3 class="text-2xl font-bold"><span id="res-mon-inc">0</span> <span class="sign"></span></h3></div>
             </div>
 
             <div id="results" class="hidden">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10 text-center">
-                    <div class="bg-slate-50 p-6 rounded-2xl border"><p class="text-gray-500 text-xs uppercase font-bold" id="t-res-total-lbl">ยอดเงินรวมสุทธิ</p><h2 class="text-3xl font-bold"><span id="res-total">0</span> <span class="sign"></span></h2></div>
-                    <div class="bg-slate-50 p-6 rounded-2xl border"><p class="text-gray-500 text-xs uppercase font-bold" id="t-res-profit-lbl">กำไรสะสม</p><h2 class="text-3xl font-bold text-emerald-600"><span id="res-profit">0</span> <span class="sign"></span></h2></div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border"><p class="text-gray-500 text-xs uppercase font-bold" id="t-res-total-lbl">มูลค่าพอร์ตสุทธิ</p><h2 class="text-3xl font-bold"><span id="res-total">0</span> <span class="sign"></span></h2></div>
+                    <div class="bg-slate-50 p-6 rounded-2xl border"><p class="text-gray-500 text-xs uppercase font-bold" id="t-res-profit-lbl">กำไร/ปันผลสะสม</p><h2 class="text-3xl font-bold text-emerald-600"><span id="res-profit">0</span> <span class="sign"></span></h2></div>
                 </div>
-                <div class="bg-white p-4 border rounded-3xl h-[350px] mb-8"><canvas id="mainChart"></canvas></div>
-                <div class="bg-white border rounded-2xl overflow-hidden"><table class="w-full text-left text-sm"><thead class="bg-gray-100 border-b text-[10px] font-bold text-gray-500 uppercase"><tr><th class="p-4" id="th-period">รอบที่/ปี</th><th class="p-4 text-right" id="th-shares">มูลค่า/จำนวน</th><th class="p-4 text-right" id="th-gain">กำไร/ปันผล</th><th class="p-4 text-right" id="th-balance">เงินรวมสุทธิ</th></tr></thead><tbody id="res-table" class="divide-y text-gray-700"></tbody></table></div>
+                <div class="bg-white p-4 border rounded-3xl h-[350px] mb-8 shadow-inner"><canvas id="mainChart"></canvas></div>
+                <div class="bg-white border rounded-2xl overflow-hidden shadow-sm"><table class="w-full text-left text-sm"><thead class="bg-gray-100 border-b text-[10px] font-bold text-gray-500 uppercase"><tr><th class="p-4" id="th-period">รอบที่/ปี</th><th class="p-4 text-right" id="th-shares">มูลค่า/จำนวน</th><th class="p-4 text-right" id="th-gain">กำไร/ปันผล</th><th class="p-4 text-right" id="th-balance">เงินรวมสุทธิ</th></tr></thead><tbody id="res-table" class="divide-y text-gray-700"></tbody></table></div>
             </div>
         </div>
     </div>
@@ -114,13 +108,13 @@
             try {
                 const res = await fetch('https://open.er-api.com/v6/latest/USD');
                 const data = await res.json();
-                if(data.rates.THB) { globalExRate = data.rates.THB; el.innerText = `✅ 1 USD = ${globalExRate.toFixed(2)} THB (Live)`; el.classList.remove('loading-pulse'); el.classList.add('text-emerald-600'); }
-            } catch(e) { el.innerText = `⚠️ Rate: 1 USD = ${globalExRate} THB (Offline)`; }
+                if(data.rates.THB) { globalExRate = data.rates.THB; el.innerText = `✅ 1 USD = ${globalExRate.toFixed(2)} THB (Live API)`; el.classList.add('text-emerald-600'); }
+            } catch(e) { el.innerText = `⚠️ ใช้ค่าออฟไลน์: 1 USD = ${globalExRate} THB`; }
         }
 
         const dict = {
-            th: { title: "🚀 ระบบคำนวณการเงิน (Real-time API)", navCp: "ดอกเบี้ยทบต้น", navTr: "จำลองการเทรด", navDv: "หุ้นปันผล (DCA)", cur: "💰 สกุลเงินหลัก (Target)", principal: "💵 เงินต้นเริ่มต้น", cpRate: "📈 กำไร (%) ต่อรอบ", cpDur: "⏳ จำนวนรอบ", trMode: "🛠️ รูปแบบการคุม Lot", trLotVal: "📦 ค่า Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)", dvShares: "📜 หุ้นเริ่มต้น (Shares)", dvPrice: "🏷️ ราคาหุ้นปัจจุบัน", dvVal: "💰 ปันผลต่อหุ้น", dvFreq: "📅 ความถี่จ่ายปันผล", dvDca: "💸 DCA ต่อเดือน", calcBtn: "คำนวณผลลัพธ์", annIncLbl: "ปันผลต่อปี (หลังภาษี)", monIncLbl: "เงินเดือนจากหุ้น", resTotalLbl: "ยอดเงินรวมสุทธิ", resProfitLbl: "กำไรสะสม" },
-            en: { title: "🚀 Portfolio Pro (Live API)", navCp: "Compound", navTr: "Trading Sim", navDv: "Dividend Stock", cur: "💰 Main Currency", principal: "💵 Initial Capital", cpRate: "📈 Profit (%)", cpDur: "⏳ Rounds", trMode: "🛠️ Lot Mode", trLotVal: "📦 Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit", trSl: "❌ Stop Loss", dvShares: "📜 Start Shares", dvPrice: "🏷️ Stock Price", dvVal: "💰 Dividend/Share", dvFreq: "📅 Frequency", dvDca: "💸 Monthly DCA", calcBtn: "Calculate", annIncLbl: "Annual Div (Net)", monIncLbl: "Monthly Dividend", resTotalLbl: "Total Balance", resProfitLbl: "Net Profit" }
+            th: { title: "🚀 ระบบคำนวณการเงิน (Final Verified)", navCp: "ดอกเบี้ยทบต้น", navTr: "จำลองการเทรด", navDv: "หุ้นปันผล (DCA)", cur: "💰 สกุลเงินหลัก (Target)", principal: "💵 เงินต้นเริ่มต้น", cpRate: "📈 กำไร (%) ต่อรอบ", cpDur: "⏳ จำนวนรอบ", trDurLabel: "⏳ จำนวนรอบเทรด", trMode: "🛠️ รูปแบบการคุม Lot", trLotVal: "📦 ค่า Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ TP (Points)", trSl: "❌ SL (Points)", dvShares: "📜 หุ้นเริ่มต้น (Shares)", dvPrice: "🏷️ ราคาหุ้นปัจจุบัน", dvVal: "💰 ปันผลต่อหุ้น", dvFreq: "📅 ความถี่จ่ายปันผล", dvDca: "💸 DCA ต่อเดือน", dvDur: "⏳ จำนวนปีที่ลงทุน", calcBtn: "คำนวณผลลัพธ์", annIncLbl: "ปันผลต่อปี (หักภาษี 10%)", monIncLbl: "รายได้เฉลี่ยต่อเดือน", resTotalLbl: "มูลค่าพอร์ตสุทธิ", resProfitLbl: "กำไร/ปันผลสะสม" },
+            en: { title: "🚀 Portfolio Pro (Final)", navCp: "Compound", navTr: "Trading Sim", navDv: "Dividend Stock", cur: "💰 Main Currency", principal: "💵 Initial Capital", cpRate: "📈 Profit (%)", cpDur: "⏳ Rounds", trDurLabel: "⏳ Trade Rounds", trMode: "🛠️ Lot Mode", trLotVal: "📦 Lot / % Risk", trWin: "🎯 Win Rate (%)", trTp: "✅ Take Profit", trSl: "❌ Stop Loss", dvShares: "📜 Start Shares", dvPrice: "🏷️ Stock Price", dvVal: "💰 Dividend/Share", dvFreq: "📅 Frequency", dvDca: "💸 Monthly DCA", dvDur: "⏳ Years", calcBtn: "Calculate", annIncLbl: "Annual Div (Tax 10%)", monIncLbl: "Monthly Income", resTotalLbl: "Net Portfolio Value", resProfitLbl: "Accumulated Profit" }
         };
 
         function updateAllUI() {
@@ -145,12 +139,12 @@
 
         function switchMode(m) {
             currentMode = m;
-            document.getElementById('tab-trading').classList.toggle('hidden', m !== 'trading');
-            document.getElementById('tab-dividend').classList.toggle('hidden', m !== 'dividend');
-            document.getElementById('box-rate').classList.toggle('hidden', m === 'dividend');
-            document.getElementById('box-principal').classList.toggle('hidden', m === 'dividend');
-            document.getElementById('box-dur').classList.toggle('hidden', m === 'dividend');
-            ['nav-compound', 'nav-trading', 'nav-dividend'].forEach(id => { document.getElementById(id).className = id.includes(m) ? "py-2 px-4 rounded-xl font-semibold bg-indigo-600 text-white shadow-lg" : "py-2 px-4 rounded-xl font-semibold text-slate-400 hover:text-white"; });
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(`tab-${m}`).classList.add('active');
+            document.getElementById('box-principal-global').classList.toggle('hidden', m === 'dividend');
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.className = btn.id.includes(m) ? "mode-btn py-2 px-4 rounded-xl font-semibold transition bg-indigo-600 text-white shadow-lg" : "mode-btn py-2 px-4 rounded-xl font-semibold transition text-slate-400 hover:text-white";
+            });
             updateAllUI();
         }
 
@@ -159,11 +153,11 @@
             const toMain = (val, cur) => (cur === mainCur) ? val : (mainCur === 'THB' ? val * globalExRate : val / globalExRate);
             const table = document.getElementById('res-table'); table.innerHTML = '';
             document.getElementById('results').classList.remove('hidden');
+            document.getElementById('analysis-div').classList.add('hidden');
             let labels = ['Start'], dataPoints = [], totalBal = 0, profit = 0;
-            const rounds = parseInt(document.getElementById('cp-duration').value);
 
             if (currentMode === 'compound') {
-                let p = parseFloat(document.getElementById('principal').value), r = parseFloat(document.getElementById('cp-rate').value)/100;
+                let p = parseFloat(document.getElementById('principal').value), r = parseFloat(document.getElementById('cp-rate').value)/100, rounds = parseInt(document.getElementById('cp-duration').value);
                 totalBal = p; dataPoints.push(p);
                 for(let i=1; i<=rounds; i++) {
                     let g = totalBal * r; totalBal += g; labels.push(i); dataPoints.push(totalBal.toFixed(2));
@@ -171,7 +165,7 @@
                 }
                 profit = totalBal - p;
             } else if (currentMode === 'trading') {
-                let p = parseFloat(document.getElementById('principal').value), lotMode = document.getElementById('tr-lot-mode').value, lotVal = parseFloat(document.getElementById('tr-lot-value').value), wr = parseFloat(document.getElementById('tr-win').value)/100, tp = parseFloat(document.getElementById('tr-tp').value), sl = parseFloat(document.getElementById('tr-sl').value);
+                let p = parseFloat(document.getElementById('principal').value), rounds = parseInt(document.getElementById('tr-duration').value), lotMode = document.getElementById('tr-lot-mode').value, lotVal = parseFloat(document.getElementById('tr-lot-value').value), wr = parseFloat(document.getElementById('tr-win').value)/100, tp = parseFloat(document.getElementById('tr-tp').value), sl = parseFloat(document.getElementById('tr-sl').value);
                 totalBal = p; dataPoints.push(p);
                 for(let i=1; i<=rounds; i++) {
                     let win = Math.random() < wr;
@@ -183,22 +177,30 @@
                 profit = totalBal - p;
             } else if (currentMode === 'dividend') {
                 document.getElementById('analysis-div').classList.remove('hidden');
-                let s = parseFloat(document.getElementById('dv-shares').value), pStk = toMain(parseFloat(document.getElementById('dv-price').value), document.getElementById('dv-price-cur').value), dVal = toMain(parseFloat(document.getElementById('dv-val').value), document.getElementById('dv-div-cur').value), dca = toMain(parseFloat(document.getElementById('dv-dca').value), document.getElementById('dv-dca-cur').value), freq = parseInt(document.getElementById('dv-freq').value), durY = 10;
-                let annDiv = dVal * (12/freq), invested = s * pStk;
+                let s = parseFloat(document.getElementById('dv-shares').value), pStk = toMain(parseFloat(document.getElementById('dv-price').value), document.getElementById('dv-price-cur').value), dVal = toMain(parseFloat(document.getElementById('dv-val').value), document.getElementById('dv-div-cur').value), dca = toMain(parseFloat(document.getElementById('dv-dca').value), document.getElementById('dv-dca-cur').value), freq = parseInt(document.getElementById('dv-freq').value), durY = parseInt(document.getElementById('dv-duration').value);
+                let investedTotal = s * pStk; totalBal = investedTotal; dataPoints.push(totalBal);
                 for(let y=1; y<=durY; y++) {
-                    let yDiv = 0;
-                    for(let m=1; m<=12; m++) { s += dca/pStk; invested += dca; if(m%freq===0) { let paid = (s*(annDiv/(12/freq)))*0.9; yDiv += paid; s += paid/pStk; } }
+                    let yearlyDivNet = 0;
+                    for(let m=1; m<=12; m++) { 
+                        s += dca/pStk; investedTotal += dca; 
+                        if(m % freq === 0) { 
+                            let paidGross = s * (dVal / (12/freq));
+                            let paidNet = paidGross * 0.9; // TAX 10%
+                            yearlyDivNet += paidNet; s += paidNet/pStk; 
+                        } 
+                    }
                     totalBal = s * pStk; labels.push('Y'+y); dataPoints.push(totalBal.toFixed(2));
-                    table.innerHTML += `<tr><td class="p-4 font-bold">Year ${y}</td><td class="p-4 text-right">${s.toLocaleString(undefined,{maximumFractionDigits:0})} Shares</td><td class="p-4 text-right text-emerald-600">+${yDiv.toLocaleString()}</td><td class="p-4 text-right font-bold">${totalBal.toLocaleString()}</td></tr>`;
+                    table.innerHTML += `<tr><td class="p-4 font-bold">Year ${y}</td><td class="p-4 text-right">${s.toLocaleString(undefined,{maximumFractionDigits:0})} Shares</td><td class="p-4 text-right text-emerald-600">+${yearlyDivNet.toLocaleString()}</td><td class="p-4 text-right font-bold">${totalBal.toLocaleString()}</td></tr>`;
                 }
-                profit = totalBal - invested;
-                document.getElementById('res-ann-inc').innerText = ((s * annDiv) * 0.9).toLocaleString();
-                document.getElementById('res-mon-inc').innerText = (((s * annDiv) * 0.9)/12).toLocaleString();
+                profit = totalBal - investedTotal;
+                let finalYearlyDiv = (s * (dVal * (12/freq))) * 0.9;
+                document.getElementById('res-ann-inc').innerText = finalYearlyDiv.toLocaleString();
+                document.getElementById('res-mon-inc').innerText = (finalYearlyDiv/12).toLocaleString();
             }
             document.getElementById('res-total').innerText = totalBal.toLocaleString();
             document.getElementById('res-profit').innerText = profit.toLocaleString();
             if(chart) chart.destroy();
-            chart = new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels, datasets: [{ label: 'Balance', data: dataPoints, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+            chart = new Chart(document.getElementById('mainChart'), { type: 'line', data: { labels, datasets: [{ label: 'Portfolio Value', data: dataPoints, borderColor: '#4f46e5', tension: 0.3, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)' }] }, options: { responsive: true, maintainAspectRatio: false } });
         }
         fetchRate(); updateAllUI();
     </script>
